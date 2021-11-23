@@ -2,14 +2,13 @@ package com.example.backend.utils;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.logging.Logger;
+
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,7 +18,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DataSourceConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
+	private static final Logger LOGGER = Logger.getLogger(DataSourceConfig.class.getName());
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String driverClassName;
@@ -29,12 +28,12 @@ public class DataSourceConfig {
 	@Bean
 	@Primary
 	public DataSource dataSource() {
-		LOGGER.debug("Connecting to DB:");
+		LOGGER.info("Connecting to DB:");
 		final HikariConfig hikariConfig = new HikariConfig();
 
-		LOGGER.debug("Set data source url : {}", dataSourceURL);
+		LOGGER.info("Set data source url : " + dataSourceURL);
 		hikariConfig.setJdbcUrl(dataSourceURL);
-		LOGGER.debug("Set driver class name : {}", driverClassName);
+		LOGGER.info("Set driver class name : " + driverClassName);
 		hikariConfig.setDriverClassName(driverClassName);
 
 		return new HikariDataSource(hikariConfig);
@@ -42,7 +41,7 @@ public class DataSourceConfig {
 
 	@Bean
 	public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
-		LOGGER.debug("Create new NamedParameterJdbcTemplate");
+		LOGGER.info("Create new NamedParameterJdbcTemplate");
 		return new NamedParameterJdbcTemplate(dataSource());
 	}
 
