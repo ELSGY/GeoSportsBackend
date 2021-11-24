@@ -12,11 +12,11 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/mail")
-public class SendEnrollMail {
+public class MailController {
 
 	private final MailService mailService;
 
-	public SendEnrollMail(MailService mailService) {
+	public MailController(MailService mailService) {
 		this.mailService = mailService;
 	}
 
@@ -27,9 +27,9 @@ public class SendEnrollMail {
 		return "Welcome mail sent to " + clientMail;
 	}
 
-	@GetMapping("/{clientMail}/{clientName}")
-	public String sendEnrollMail(@PathVariable String clientMail, @PathVariable String clientName) throws MessagingException, IOException, WriterException {
-		mailService.sendMessageWithAttachment(clientMail, clientName);
+	@GetMapping("/{clientMail}/{clientName}/{activityName}")
+	public String sendEnrollMail(@PathVariable String clientMail, @PathVariable String clientName, @PathVariable String activityName) throws MessagingException, IOException, WriterException {
+		mailService.sendMessageWithAttachment(clientMail, clientName, activityName);
 
 		return "Activity ticket sent to " + clientMail;
 	}

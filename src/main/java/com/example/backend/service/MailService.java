@@ -35,7 +35,7 @@ public class MailService {
 
 	}
 
-	public void sendMessageWithAttachment(String clientMail, String clientName) throws MessagingException, IOException, WriterException {
+	public void sendMessageWithAttachment(String clientMail, String clientName, String activityName) throws MessagingException, IOException, WriterException {
 
 		qrCodeService.createQRCode(clientName);
 
@@ -46,10 +46,13 @@ public class MailService {
 		helper.setFrom("geosports.srl@gmail.com");
 		helper.setTo(clientMail);
 		helper.setSubject("Here is your QRCode for your activity! 🎉");
-		helper.setText("Don't forget: don't show it to anyone 🤐");
+		helper.setText("Hello " + clientName + "," +
+					   "\n\nThis email has been sent to you because you are attending " + activityName + "." +
+					  	"\nShow your QR Code to our team when you arrive there.See you soon!😋" +
+					   "\n\nDon't forget: don't show it to anyone 🤐");
 
 		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + clientName + ".png");
-		helper.addAttachment("QRCode.png", file);
+		helper.addAttachment("My_QRCode.png", file);
 
 		emailSender.send(message);
 

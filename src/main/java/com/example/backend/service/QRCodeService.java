@@ -21,7 +21,7 @@ public class QRCodeService {
 
 		String qrCodeFormat = "PNG";
 		String path = "src\\main\\resources\\qrcodes\\";
-		String data = "ActivityName_Ticket";
+		String data = "Here's my private activity code: " + 124124;
 		String fileName = client + ".png";
 
 		BitMatrix matrix = new MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, 300, 300);
