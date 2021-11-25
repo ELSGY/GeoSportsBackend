@@ -3,8 +3,11 @@ package com.example.backend.model;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Client {
+public class User {
 
+	@Getter
+	@Setter
+	private int id;
 	@Getter
 	@Setter
 	private String fullName;
@@ -16,20 +19,17 @@ public class Client {
 	private String email;
 	@Getter
 	@Setter
-	private String password;
-	@Getter
-	@Setter
 	private byte[] photo;
 
-	public Client() {
+	public User() {
 
 	}
 
-	public Client(String fullName, String username, String email, String password, byte[] photo) {
+	public User(int id, String fullName, String username, String email, byte[] photo) {
+		this.id = id;
 		this.fullName = fullName;
 		this.username = username;
 		this.email = email;
-		this.password = password;
 		this.photo = photo;
 	}
 

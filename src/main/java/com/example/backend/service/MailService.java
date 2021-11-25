@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
@@ -43,13 +44,17 @@ public class MailService {
 
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-		helper.setFrom("geosports.srl@gmail.com");
+		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team") );
 		helper.setTo(clientMail);
 		helper.setSubject("Here is your QRCode for your activity! 🎉");
 		helper.setText("Hello " + clientName + "," +
-					   "\n\nThis email has been sent to you because you are attending " + activityName + "." +
-					  	"\nShow your QR Code to our team when you arrive there.See you soon!😋" +
-					   "\n\nDon't forget: don't show it to anyone 🤐");
+					   "\n\nThis email has been sent to you because you are attending: " +
+					   "\n\nEvent: " + activityName +
+					   "\nDate: " + "23.07.2022" +
+					   "\nTime: " + "07:00 - 20:00" +
+					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
+					   "\n\nDon't forget: don't show it to anyone 🤐" +
+					   "\n\nGeoSports Team 🏕");
 
 		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + clientName + ".png");
 		helper.addAttachment("My_QRCode.png", file);

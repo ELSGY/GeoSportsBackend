@@ -1,24 +1,24 @@
 package com.example.backend.controller;
 
-import com.example.backend.service.ClientService;
+import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/client")
-public class ClientController {
+@RequestMapping("/user")
+public class UserController {
 
-	private final ClientService clientService;
+	private final UserService userService;
 
 	@Autowired
-	public ClientController(ClientService clientService) {
-		this.clientService = clientService;
+	public UserController(UserService userService) {
+		this.userService = userService;
 	}
 
 	@GetMapping("/getAllUsers")
 	public String sendEnrollMail() {
-		return clientService.getAllUsers();
+		return userService.getAllUsers();
 	}
 }

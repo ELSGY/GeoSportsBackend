@@ -1,6 +1,6 @@
 package com.example.backend.repository;
 
-import com.example.backend.model.Client;
+import com.example.backend.model.User;
 
 import java.util.logging.Logger;
 
@@ -14,21 +14,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Repository
-public class ClientRepository {
+public class UserRepository {
 
-	private static final Logger LOGGER = Logger.getLogger(ClientRepository.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(UserRepository.class.getName());
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 
 	@Autowired
-	public ClientRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+	public UserRepository(NamedParameterJdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public Set<Client> getUsers() {
+	public Set<User> getUsers() {
 
 		try {
-			Set<Client> usersList = new HashSet<>(jdbcTemplate.query("select * from clients;", BeanPropertyRowMapper.newInstance(Client.class)));
+			Set<User> usersList = new HashSet<>(jdbcTemplate.query("SELECT id,\n" +
+																   "       full_name,\n" +
+																   "       username,\n" +
+																   "       email,\n" +
+																   "       photo\n" +
+																   "  FROM users;", BeanPropertyRowMapper.newInstance(User.class)));
 
 			LOGGER.info("Successfully retrieved " + usersList.size() + " events from DB");
 
@@ -39,4 +44,6 @@ public class ClientRepository {
 
 		return null;
 	}
+
+
 }
