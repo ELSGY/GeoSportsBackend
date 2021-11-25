@@ -6,6 +6,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -17,11 +18,21 @@ public class QRCodeService {
 
 	private static final Logger LOGGER = Logger.getLogger(DataSourceConfig.class.getName());
 
-	public void createQRCode(String client) throws WriterException, IOException {
+	private final UserService userService;
+
+	@Autowired
+	public QRCodeService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public void createQRCode(String client, int userId) throws WriterException, IOException {
+
+		// generate code
+		String code = userService.generateEventCode(userId);
 
 		String qrCodeFormat = "PNG";
 		String path = "src\\main\\resources\\qrcodes\\";
-		String data = "Here's my private activity code: " + 124124;
+		String data = "Here's my private activity code: " + code;
 		String fileName = client + ".png";
 
 		BitMatrix matrix = new MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, 300, 300);

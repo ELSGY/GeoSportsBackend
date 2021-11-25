@@ -33,4 +33,9 @@ public class User {
 		this.photo = photo;
 	}
 
+	public String toString() {
+
+		return "\nID: " + getId() + " NAME: " + getFullName() + " USERNAME: " + getUsername() + " EMAIL: " + getEmail();
+	}
+
 }

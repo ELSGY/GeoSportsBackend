@@ -32,5 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### Properties file ###
+### Date files ###
 application.properties
+qrcodes

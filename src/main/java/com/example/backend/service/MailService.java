@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.repository.UserRepository;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -18,11 +19,13 @@ public class MailService {
 
 	private final JavaMailSender emailSender;
 	private final QRCodeService qrCodeService;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService) {
+	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService, UserRepository userRepository) {
 		this.emailSender = emailSender;
 		this.qrCodeService = qrCodeService;
+		this.userRepository = userRepository;
 	}
 
 	public void sendMail(String clientMail) {
@@ -36,18 +39,22 @@ public class MailService {
 
 	}
 
-	public void sendMessageWithAttachment(String clientMail, String clientName, String activityName) throws MessagingException, IOException, WriterException {
+	public void sendMessageWithAttachment(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
 
-		qrCodeService.createQRCode(clientName);
+		// get user id by name
+		int userId = userRepository.getUserByName(userName).getId();
+
+		// create qr code
+		qrCodeService.createQRCode(userName, userId);
 
 		MimeMessage message = emailSender.createMimeMessage();
 
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team") );
-		helper.setTo(clientMail);
+		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+		helper.setTo(userMail);
 		helper.setSubject("Here is your QRCode for your activity! 🎉");
-		helper.setText("Hello " + clientName + "," +
+		helper.setText("Hello " + userName + "," +
 					   "\n\nThis email has been sent to you because you are attending: " +
 					   "\n\nEvent: " + activityName +
 					   "\nDate: " + "23.07.2022" +
@@ -56,8 +63,8 @@ public class MailService {
 					   "\n\nDon't forget: don't show it to anyone 🤐" +
 					   "\n\nGeoSports Team 🏕");
 
-		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + clientName + ".png");
-		helper.addAttachment("My_QRCode.png", file);
+		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + userName + ".png");
+		helper.addAttachment(activityName + "_QRCode.png", file);
 
 		emailSender.send(message);
 
