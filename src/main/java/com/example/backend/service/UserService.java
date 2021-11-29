@@ -2,15 +2,14 @@ package com.example.backend.service;
 
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.utils.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 @Service
@@ -44,7 +43,7 @@ public class UserService {
 		userJSON.addProperty("username", user.getUsername());
 		userJSON.addProperty("email", user.getEmail());
 
-		return userJSON.toString();
+		return FileService.objectToJson(userJSON);
 	}
 
 	public String getUserByName(String name) {
@@ -57,7 +56,7 @@ public class UserService {
 		userJSON.addProperty("username", user.getUsername());
 		userJSON.addProperty("email", user.getEmail());
 
-		return userJSON.toString();
+		return FileService.objectToJson(userJSON);
 	}
 
 	public String generateEventCode(int id) {
