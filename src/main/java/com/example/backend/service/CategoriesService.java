@@ -60,4 +60,20 @@ public class CategoriesService {
 
 		return FileService.objectToJson(categoriesMap);
 	}
+
+	public String getCategoryById(int id) {
+		return categoriesRepository.getCategoryById(id).getCatName();
+	}
+
+	public String getSubcategoryById(int id) {
+		return categoriesRepository.getSubcategoryById(id).getSubcatName();
+	}
+
+	public int getCategoryByName(String name) {
+		return categoriesRepository.getCategoryByName(name).getId();
+	}
+
+	public int getSubcategoryByName(String name) {
+		return categoriesRepository.getSubcategoryByName(name).getId();
+	}
 }
