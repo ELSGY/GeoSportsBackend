@@ -88,4 +88,27 @@ public class UserRepository {
 		return null;
 	}
 
+	public User getUserByPVKey(String pvKey) {
+
+		try {
+			List<User> user = jdbcTemplate.query("SELECT u.id,\n" +
+												 "       u.full_name,\n" +
+												 "       u.username,\n" +
+												 "       u.email,\n" +
+												 "       u.photo\n" +
+												 "  FROM users u,\n" +
+												 "       activityTickets at\n" +
+												 " WHERE u.id = at.user_id AND \n" +
+												 "       at.pv_key = " + "\"" + pvKey + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
+
+			LOGGER.info("Successfully retrieved user from DB");
+
+			return user.get(0);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		return null;
+	}
+
 }

@@ -38,4 +38,9 @@ public class UserController {
 		return userService.generateEventCode(1);
 	}
 
+	@GetMapping("/getUserByPVKey/{pvKey}")
+	public String getUserByPVKey(@PathVariable String pvKey) {
+		return userService.getUserByPVKey(pvKey);
+	}
+
 }

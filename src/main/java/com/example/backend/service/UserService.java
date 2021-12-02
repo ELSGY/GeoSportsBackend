@@ -46,6 +46,19 @@ public class UserService {
 		return FileService.objectToJson(userJSON);
 	}
 
+	public String getUserByPVKey(String pvKey) {
+
+		User user = userRepository.getUserByPVKey(pvKey);
+
+		JsonObject userJSON = new JsonObject();
+		userJSON.addProperty("id", user.getId());
+		userJSON.addProperty("name", user.getFullName());
+		userJSON.addProperty("username", user.getUsername());
+		userJSON.addProperty("email", user.getEmail());
+
+		return FileService.objectToJson(userJSON);
+	}
+
 	public String getUserByName(String name) {
 
 		User user = userRepository.getUserByName(name);
