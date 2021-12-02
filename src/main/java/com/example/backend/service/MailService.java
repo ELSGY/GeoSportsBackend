@@ -13,6 +13,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @Component
 public class MailService {
@@ -28,13 +29,25 @@ public class MailService {
 		this.userRepository = userRepository;
 	}
 
-	public void sendMail(String clientMail) {
+	public void sendMail(String userMail, String userName) throws UnsupportedEncodingException, MessagingException {
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom("geosports.srl@gmail.com");
-		message.setTo(clientMail);
-		message.setSubject("Welcome on board! 😋");
-		message.setText("");
+		MimeMessage message = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+		helper.setTo(userMail);
+		helper.setSubject("Welcome onboard! 😋");
+		helper.setText("Hello " + userName + ",\n" +
+					   "\n" +
+					   "Thank you for joining our team 🤩.\n" +
+					   "\n" +
+					   "We would like to confirm that your account was created successfully. To access our page click the link below:\n" +
+					   "\n" +
+					   "http://localhost:3000/home\n" +
+					   "\n" +
+					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
+					   "\n" +
+					   "GeoSports Team 🏕");
 		emailSender.send(message);
 
 	}

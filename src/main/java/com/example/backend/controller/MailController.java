@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/mail")
@@ -20,9 +21,9 @@ public class MailController {
 		this.mailService = mailService;
 	}
 
-	@GetMapping("/welcome/{userMail}")
-	public String welcomeMail(@PathVariable String userMail) {
-		mailService.sendMail(userMail);
+	@GetMapping("/welcome/{userMail}/{userName}")
+	public String welcomeMail(@PathVariable String userMail, @PathVariable String userName) throws MessagingException, UnsupportedEncodingException {
+		mailService.sendMail(userMail, userName);
 
 		return "Welcome mail sent to " + userMail;
 	}
