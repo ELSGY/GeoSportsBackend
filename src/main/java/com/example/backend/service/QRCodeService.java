@@ -25,10 +25,10 @@ public class QRCodeService {
 		this.userService = userService;
 	}
 
-	public void createQRCode(String client, int userId) throws WriterException, IOException {
+	public void createQRCode(String client, int userId, int activityID) throws WriterException, IOException {
 
 		// generate code
-		String code = userService.generateEventCode(userId);
+		String code = userService.generateEventCode(userId, activityID);
 
 		String qrCodeFormat = "PNG";
 		String path = "src\\main\\resources\\qrcodes\\";

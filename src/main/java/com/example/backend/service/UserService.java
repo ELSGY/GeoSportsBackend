@@ -72,14 +72,14 @@ public class UserService {
 		return FileService.objectToJson(userJSON);
 	}
 
-	public String generateEventCode(int id) {
+	public String generateEventCode(int userID, int activityID) {
 
 		LocalDate date = LocalDate.now();
 		int day = date.getDayOfMonth();
 		int month = date.getMonthValue();
 		int year = date.getYear();
 
-		return String.format("GST%d%d%d%d", day, month, year, id);
+		return String.format("GST%d%d%d%d%d", day, month, year, userID, activityID);
 
 	}
 }

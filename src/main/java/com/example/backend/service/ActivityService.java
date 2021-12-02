@@ -52,4 +52,23 @@ public class ActivityService {
 		return FileService.objectToJson(activityList);
 	}
 
+	public String getActivityByName(String name){
+
+		Activity activity = activityRepository.getActivityByName(name);
+
+		JsonObject activityJSON = new JsonObject();
+		activityJSON.addProperty("id", activity.getId());
+		activityJSON.addProperty("name", activity.getName());
+		activityJSON.addProperty("latitude", activity.getLatitude());
+		activityJSON.addProperty("longitude", activity.getLongitude());
+		activityJSON.addProperty("avbPlaces", activity.getAvbPlaces());
+		activityJSON.addProperty("category", categoriesService.getCategoryById(activity.getIdCat()));
+		activityJSON.addProperty("subcategory", categoriesService.getSubcategoryById(activity.getIdSubcat()));
+		activityJSON.addProperty("address", activity.getAddress());
+		activityJSON.addProperty("date", activity.getDate());
+		activityJSON.addProperty("time", activity.getTime());
+
+		return FileService.objectToJson(activityJSON);
+	}
+
 }

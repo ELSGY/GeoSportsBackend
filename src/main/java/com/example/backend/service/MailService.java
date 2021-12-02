@@ -1,10 +1,10 @@
 package com.example.backend.service;
 
+import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,14 @@ public class MailService {
 	private final JavaMailSender emailSender;
 	private final QRCodeService qrCodeService;
 	private final UserRepository userRepository;
+	private final ActivityRepository activityRepository;
 
 	@Autowired
-	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService, UserRepository userRepository) {
+	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService, UserRepository userRepository, ActivityRepository activityRepository) {
 		this.emailSender = emailSender;
 		this.qrCodeService = qrCodeService;
 		this.userRepository = userRepository;
+		this.activityRepository = activityRepository;
 	}
 
 	public void sendMail(String userMail, String userName) throws UnsupportedEncodingException, MessagingException {
@@ -54,11 +56,12 @@ public class MailService {
 
 	public void sendMessageWithAttachment(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
 
-		// get user id by name
-		int userId = userRepository.getUserByName(userName).getId();
+		// get user id by name and activity id by name
+		int userID = userRepository.getUserByName(userName).getId();
+		int activityID = activityRepository.getActivityByName(activityName).getId();
 
 		// create qr code
-		qrCodeService.createQRCode(userName, userId);
+		qrCodeService.createQRCode(userName, userID, activityID);
 
 		MimeMessage message = emailSender.createMimeMessage();
 
