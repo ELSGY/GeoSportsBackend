@@ -1,11 +1,10 @@
 package com.example.backend.repository;
 
 import com.example.backend.model.Activity;
-import com.example.backend.model.SportsCategories;
-import com.example.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +57,19 @@ public class ActivityRepository {
 		}
 
 		return null;
+	}
+
+	public Activity insertActivityIntoDB(Activity ac) {
+
+		String sql = "INSERT INTO activity(name, latitude, longitude, avb_places, id_cat, id_subcat, address, date, time) " +
+					 "VALUES(:name, :latitude, :longitude, :avbPlaces, :idCat, :idSubcat, :address, :date, :time);";
+		try {
+			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(ac));
+			return ac;
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return ac;
 	}
 
 }

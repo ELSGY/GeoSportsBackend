@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.utils.FileService;
+import com.google.gson.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +25,26 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 
+	private void createJSONUser(User user, JsonObject userJSON) {
+		userJSON.addProperty("id", user.getId());
+		userJSON.addProperty("name", user.getFullName());
+		userJSON.addProperty("username", user.getUsername());
+		userJSON.addProperty("email", user.getEmail());
+	}
+
 	public String getAllUsers() {
 
 		Set<User> usersList = userRepository.getUsers();
 
-		LOGGER.info(String.valueOf(usersList));
+		JsonArray jsonArray = new JsonArray();
 
-		return "";
+		usersList.forEach(user -> {
+			JsonObject userJSON = new JsonObject();
+			createJSONUser(user, userJSON);
+			jsonArray.add(userJSON);
+		});
+
+		return FileService.objectToJson(jsonArray);
 	}
 
 	public String getUserById(int id) {
@@ -38,10 +52,7 @@ public class UserService {
 		User user = userRepository.getUserById(id);
 
 		JsonObject userJSON = new JsonObject();
-		userJSON.addProperty("id", user.getId());
-		userJSON.addProperty("name", user.getFullName());
-		userJSON.addProperty("username", user.getUsername());
-		userJSON.addProperty("email", user.getEmail());
+		createJSONUser(user, userJSON);
 
 		return FileService.objectToJson(userJSON);
 	}
@@ -51,10 +62,7 @@ public class UserService {
 		User user = userRepository.getUserByPVKey(pvKey);
 
 		JsonObject userJSON = new JsonObject();
-		userJSON.addProperty("id", user.getId());
-		userJSON.addProperty("name", user.getFullName());
-		userJSON.addProperty("username", user.getUsername());
-		userJSON.addProperty("email", user.getEmail());
+		createJSONUser(user, userJSON);
 
 		return FileService.objectToJson(userJSON);
 	}
@@ -64,10 +72,7 @@ public class UserService {
 		User user = userRepository.getUserByName(name);
 
 		JsonObject userJSON = new JsonObject();
-		userJSON.addProperty("id", user.getId());
-		userJSON.addProperty("name", user.getFullName());
-		userJSON.addProperty("username", user.getUsername());
-		userJSON.addProperty("email", user.getEmail());
+		createJSONUser(user, userJSON);
 
 		return FileService.objectToJson(userJSON);
 	}

@@ -17,7 +17,7 @@ public class CategoriesController {
 		this.categoriesService = categoriesService;
 	}
 
-	@GetMapping
+	@GetMapping("/categoriesMap")
 	public String getCategoriesMap(){
 		return categoriesService.getCategoriesMap();
 	}
