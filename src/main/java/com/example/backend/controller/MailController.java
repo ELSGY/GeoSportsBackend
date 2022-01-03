@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.service.MailService;
 import com.google.zxing.WriterException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/mail")
 public class MailController {

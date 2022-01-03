@@ -52,4 +52,8 @@ public class Activity {
 		this.date = date;
 		this.time = time;
 	}
+
+	public String toString(){
+		return name + " " + latitude + " " + longitude;
+	}
 }

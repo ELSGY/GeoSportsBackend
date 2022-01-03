@@ -20,16 +20,20 @@ public class User {
 	@Getter
 	@Setter
 	private byte[] photo;
+	@Getter
+	@Setter
+	private boolean isAdmin;
 
 	public User() {
 
 	}
 
-	public User(int id, String fullName, String username, String email, byte[] photo) {
+	public User(int id, String fullName, String username, String email, byte[] photo, boolean isAdmin) {
 		this.id = id;
 		this.fullName = fullName;
 		this.username = username;
 		this.email = email;
 		this.photo = photo;
+		this.isAdmin = isAdmin;
 	}
 }

@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Activity;
 import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
 import com.google.zxing.WriterException;
@@ -58,7 +59,10 @@ public class MailService {
 
 		// get user id by name and activity id by name
 		int userID = userRepository.getUserByName(userName).getId();
-		int activityID = activityRepository.getActivityByName(activityName).getId();
+		Activity activity = activityRepository.getActivityByName(activityName);
+		int activityID = activity.getId();
+		String activityTime = activity.getTime();
+		String activityDate = activity.getDate();
 
 		// create qr code
 		qrCodeService.createQRCode(userName, userID, activityID);
@@ -73,8 +77,8 @@ public class MailService {
 		helper.setText("Hello " + userName + "," +
 					   "\n\nThis email has been sent to you because you are attending: " +
 					   "\n\nEvent: " + activityName +
-					   "\nDate: " + "23.07.2022" +
-					   "\nTime: " + "07:00 - 20:00" +
+					   "\nDate: " + activityDate +
+					   "\nTime: " + activityTime +
 					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
 					   "\n\nDon't forget: don't show it to anyone 🤐" +
 					   "\n\nGeoSports Team 🏕");

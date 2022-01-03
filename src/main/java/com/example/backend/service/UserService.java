@@ -27,7 +27,7 @@ public class UserService {
 
 	private void createJSONUser(User user, JsonObject userJSON) {
 		userJSON.addProperty("id", user.getId());
-		userJSON.addProperty("name", user.getFullName());
+		userJSON.addProperty("fullName", user.getFullName());
 		userJSON.addProperty("username", user.getUsername());
 		userJSON.addProperty("email", user.getEmail());
 	}

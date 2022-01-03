@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -55,7 +57,7 @@ public class DataSourceConfig {
 		mailSender.setPort(587);
 
 		mailSender.setUsername("geosports.srl@gmail.com");
-		mailSender.setPassword("geosports07");
+		mailSender.setPassword("Geosports2021");
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");

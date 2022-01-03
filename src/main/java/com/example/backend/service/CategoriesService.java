@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @Service
 public class CategoriesService {
 
-	private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(CategoriesService.class.getName());
 
 	private final CategoriesRepository categoriesRepository;
 
@@ -44,7 +44,7 @@ public class CategoriesService {
 
 			sportsSubCategoriesSet.forEach(subCat -> {
 
-				LOGGER.info("" + subCat.getCat());
+//				LOGGER.info("" + subCat.getCat());
 
 				if (subCat.getCat() == cat.getId()) {
 					subCategories.add(subCat.getSubcatName());
