@@ -25,7 +25,7 @@ public class QRCodeService {
 		this.userService = userService;
 	}
 
-	public void createQRCode(String client, int userId, int activityID) throws WriterException, IOException {
+	public String createQRCode(String client, int userId, int activityID) throws WriterException, IOException {
 
 		// generate code
 		String code = userService.generateEventCode(userId, activityID);
@@ -40,5 +40,6 @@ public class QRCodeService {
 
 		LOGGER.info("QR CODE created!");
 
+		return code;
 	}
 }

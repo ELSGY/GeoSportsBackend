@@ -30,10 +30,10 @@ public class UserController {
 		return userService.getUserById(id);
 	}
 
-	@GetMapping("/getUserByName/{name}")
-	public String getUserByName(@PathVariable String name) {
-		return userService.getUserByName(name);
-	}
+//	@GetMapping("/getUserByName/{name}")
+//	public String getUserByName(@PathVariable String name) {
+//		return userService.getUserByName(name);
+//	}
 
 	@GetMapping("/getUserByPVKey/{pvKey}")
 	public String getUserByPVKey(@PathVariable String pvKey) {

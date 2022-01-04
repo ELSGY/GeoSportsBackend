@@ -67,9 +67,9 @@ public class UserService {
 		return FileService.objectToJson(userJSON);
 	}
 
-	public String getUserByName(String name) {
+	public String getUserByUsername(String name) {
 
-		User user = userRepository.getUserByName(name);
+		User user = userRepository.getUserByUsername(name);
 
 		JsonObject userJSON = new JsonObject();
 		createJSONUser(user, userJSON);

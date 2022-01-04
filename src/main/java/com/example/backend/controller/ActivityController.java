@@ -32,9 +32,9 @@ public class ActivityController {
 		return activityService.getAllActivities();
 	}
 
-	@GetMapping("/getDefaultActivities/{latitude}/{longitude}")
-	public String getDefaultActivitiesForClient(@PathVariable double latitude, @PathVariable double longitude) {
-		return activityService.getDefaultActivitiesForClient(latitude, longitude);
+	@GetMapping("/getDefaultActivities/{latitude}/{longitude}/{distance}")
+	public String getDefaultActivitiesForClient(@PathVariable double latitude, @PathVariable double longitude, @PathVariable int distance) {
+		return activityService.getDefaultActivitiesForClient(latitude, longitude, distance);
 	}
 
 	@GetMapping("/userEnrolled/{activityId}")

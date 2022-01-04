@@ -106,7 +106,7 @@ public class ActivityService {
 		return R * c;
 	}
 
-	public String getDefaultActivitiesForClient(double lat, double lng) {
+	public String getDefaultActivitiesForClient(double lat, double lng, int distance) {
 
 		Set<Activity> activities = activityRepository.getAllActivities();
 
@@ -114,7 +114,7 @@ public class ActivityService {
 
 		activities.forEach(activity -> {
 
-			if (getDistanceBetweenTwoActivities(lat, lng, activity.getLatitude(), activity.getLongitude()) >= 100) {
+			if (getDistanceBetweenTwoActivities(lat, lng, activity.getLatitude(), activity.getLongitude()) <= distance) {
 				addToJSONArray(activityList, activity);
 			}
 		});
@@ -129,5 +129,9 @@ public class ActivityService {
 
 	public void updateActivityParticipants(int activityId) {
 		activityRepository.updateActivityParticipants(activityId);
+	}
+
+	public void insertActivityTicket(int userId, int activityId, String code) {
+		activityRepository.insertActivityTicket(userId, activityId, code);
 	}
 }

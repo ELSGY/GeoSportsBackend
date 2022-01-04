@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,6 +71,21 @@ public class ActivityRepository {
 			LOGGER.info(String.valueOf(e));
 		}
 		return ac;
+	}
+
+	public void insertActivityTicket(int userId, int activityId, String code) {
+
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("userId", userId);
+		hashMap.put("activityId", activityId);
+		hashMap.put("code", code);
+
+		String sql = "INSERT INTO activityTickets(user_id, activity_id, pv_key) VALUES (:userId,:activityId,:code);";
+		try {
+			jdbcTemplate.update(sql, hashMap);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
 	}
 
 	public void updateActivityParticipants(int activityId) {

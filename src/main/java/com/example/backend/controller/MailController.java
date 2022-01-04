@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.service.ActivityService;
 import com.example.backend.service.MailService;
 import com.google.zxing.WriterException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +20,7 @@ public class MailController {
 
 	private final MailService mailService;
 
-	public MailController(MailService mailService) {
+	public MailController(MailService mailService, ActivityService activityService) {
 		this.mailService = mailService;
 	}
 
@@ -33,8 +34,7 @@ public class MailController {
 	@GetMapping("/{userMail}/{userName}/{activityName}")
 	public String sendEnrollMail(@PathVariable String userMail, @PathVariable String userName, @PathVariable String activityName) throws MessagingException, IOException, WriterException {
 		mailService.sendMessageWithAttachment(userMail, userName, activityName);
-
-		return "Activity ticket sent to " + userMail;
+		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 
 }

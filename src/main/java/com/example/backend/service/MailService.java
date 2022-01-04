@@ -23,13 +23,15 @@ public class MailService {
 	private final QRCodeService qrCodeService;
 	private final UserRepository userRepository;
 	private final ActivityRepository activityRepository;
+	private final ActivityService activityService;
 
 	@Autowired
-	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService, UserRepository userRepository, ActivityRepository activityRepository) {
+	public MailService(JavaMailSender emailSender, QRCodeService qrCodeService, UserRepository userRepository, ActivityRepository activityRepository, ActivityService activityService) {
 		this.emailSender = emailSender;
 		this.qrCodeService = qrCodeService;
 		this.userRepository = userRepository;
 		this.activityRepository = activityRepository;
+		this.activityService = activityService;
 	}
 
 	public void sendMail(String userMail, String userName) throws UnsupportedEncodingException, MessagingException {
@@ -58,14 +60,19 @@ public class MailService {
 	public void sendMessageWithAttachment(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
 
 		// get user id by name and activity id by name
-		int userID = userRepository.getUserByName(userName).getId();
+		System.out.println(userName);
+		int userID = userRepository.getUserByUsername(userName).getId();
+		System.out.println("am trecut");
 		Activity activity = activityRepository.getActivityByName(activityName);
 		int activityID = activity.getId();
 		String activityTime = activity.getTime();
 		String activityDate = activity.getDate();
 
 		// create qr code
-		qrCodeService.createQRCode(userName, userID, activityID);
+		String code = qrCodeService.createQRCode(userName, userID, activityID);
+
+		// insert ticket into db
+		activityService.insertActivityTicket(userID, activityID, code);
 
 		MimeMessage message = emailSender.createMimeMessage();
 

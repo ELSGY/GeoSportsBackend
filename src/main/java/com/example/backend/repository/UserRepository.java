@@ -67,6 +67,26 @@ public class UserRepository {
 		return null;
 	}
 
+	public User getUserByUsername(String username) {
+
+		try {
+			List<User> user = jdbcTemplate.query("SELECT id,\n" +
+												 "       full_name,\n" +
+												 "       username,\n" +
+												 "       email,\n" +
+												 "       photo\n" +
+												 "  FROM users\n" +
+												 " WHERE username = " + "\"" + username + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
+
+			LOGGER.info("Successfully retrieved user from DB");
+			return user.get(0);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		return null;
+	}
+
 	public User getUserByName(String name) {
 
 		try {
@@ -76,11 +96,10 @@ public class UserRepository {
 												 "       email,\n" +
 												 "       photo\n" +
 												 "  FROM users\n" +
-												 " WHERE full_name = " + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
+												 " WHERE username = " + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
 
 			LOGGER.info("Successfully retrieved user from DB");
 
-			return user.get(0);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
