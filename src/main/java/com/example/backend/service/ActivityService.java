@@ -8,6 +8,11 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -27,12 +32,35 @@ public class ActivityService {
 
 	public String getAllActivities() {
 
+		// get activities from db
 		Set<Activity> activitySet = activityRepository.getAllActivities();
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		LocalDate todayDate = LocalDate.now();
+		String localDateString = dtf.format(todayDate);
+		Date today = null;
+
+		try {
+			today = sdf.parse(localDateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
 		JsonArray activityList = new JsonArray();
 
+		Date finalToday = today;
 		activitySet.forEach(activity -> {
-			addToJSONArray(activityList, activity);
+
+			Date activityDate = null;
+			try {
+				LOGGER.info(activity.getDate());
+				activityDate = sdf.parse(activity.getDate());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			if (finalToday.before(activityDate))
+				addToJSONArray(activityList, activity);
 		});
 
 		return FileService.objectToJson(activityList);
@@ -97,5 +125,9 @@ public class ActivityService {
 		JsonObject activityJSON = getActivityJSON(activity);
 
 		activityList.add(activityJSON);
+	}
+
+	public void updateActivityParticipants(int activityId) {
+		activityRepository.updateActivityParticipants(activityId);
 	}
 }

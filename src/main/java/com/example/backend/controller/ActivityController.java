@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 @CrossOrigin
@@ -34,6 +35,11 @@ public class ActivityController {
 	@GetMapping("/getDefaultActivities/{latitude}/{longitude}")
 	public String getDefaultActivitiesForClient(@PathVariable double latitude, @PathVariable double longitude) {
 		return activityService.getDefaultActivitiesForClient(latitude, longitude);
+	}
+
+	@GetMapping("/userEnrolled/{activityId}")
+	public void updateActivityParticipants(@PathVariable int activityId) {
+		activityService.updateActivityParticipants(activityId);
 	}
 
 	@PostMapping("/insertActivity")

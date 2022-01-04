@@ -72,4 +72,15 @@ public class ActivityRepository {
 		return ac;
 	}
 
+	public void updateActivityParticipants(int activityId) {
+		String sql = "UPDATE activity\n" +
+					 "   SET avb_places = avb_places - 1\n" +
+					 " WHERE id='?';";
+		try {
+			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(activityId));
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+	}
+
 }
