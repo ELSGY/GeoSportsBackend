@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.User;
 import com.example.backend.repository.ActivityRepository;
+import com.example.backend.repository.UserRepository;
 import com.example.backend.utils.FileService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,11 +25,13 @@ public class ActivityService {
 
 	private final ActivityRepository activityRepository;
 	private final CategoriesService categoriesService;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public ActivityService(ActivityRepository activityRepository, CategoriesService categoriesService) {
+	public ActivityService(ActivityRepository activityRepository, CategoriesService categoriesService, UserRepository userRepository) {
 		this.activityRepository = activityRepository;
 		this.categoriesService = categoriesService;
+		this.userRepository = userRepository;
 	}
 
 	public String getAllActivities() {
@@ -106,7 +110,7 @@ public class ActivityService {
 		return R * c;
 	}
 
-	public String getDefaultActivitiesForClient(double lat, double lng, int distance) {
+	public String getDistanceActivitiesForClient(double lat, double lng, int distance) {
 
 		Set<Activity> activities = activityRepository.getAllActivities();
 
@@ -118,6 +122,38 @@ public class ActivityService {
 				addToJSONArray(activityList, activity);
 			}
 		});
+		return FileService.objectToJson(activityList);
+	}
+
+	public String getDefaultActivitiesForUser(String username) {
+
+		User user = userRepository.getUserByUsername(username);
+		int userId = user.getId();
+
+		LOGGER.info("User retrieved from DB: [" + user.getFullName() + "]");
+
+		Set<Activity> activities = activityRepository.getAllActivities();
+		LOGGER.info("All activities");
+
+		activities.forEach(activity -> {
+			LOGGER.info(activity.toString());
+		});
+		Set<Activity> enrolledActivities = activityRepository.getEnrolledActivitiesForUser(userId);
+		LOGGER.info("Enrolled activities");
+
+		enrolledActivities.forEach(activity -> {
+			LOGGER.info(activity.toString());
+		});
+
+		JsonArray activityList = new JsonArray();
+
+		activities.forEach(activity -> enrolledActivities.forEach(enrolledActivity -> {
+			if (enrolledActivity.getName().equals(activity.getName())) {
+				LOGGER.info("Activity set contains: [" + activity + "]");
+			} else {
+				addToJSONArray(activityList, activity);
+			}
+		}));
 		return FileService.objectToJson(activityList);
 	}
 

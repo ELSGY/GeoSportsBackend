@@ -60,6 +60,28 @@ public class ActivityRepository {
 		return null;
 	}
 
+	public Set<Activity> getEnrolledActivitiesForUser(int userID) {
+
+		LOGGER.info("Getting activities from user with ID: [" + userID + "]");
+
+
+		try {
+			Set<Activity> enrolledActivities = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
+																				"  FROM activity a,\n" +
+																				"       activityTickets at\n" +
+																				" WHERE a.id = at.activity_id AND \n" +
+																				"       at.user_id = " + userID + ";\n", BeanPropertyRowMapper.newInstance(Activity.class)));
+
+			LOGGER.info("Successfully retrieved " + enrolledActivities.size() + " enrolled activities for user from DB");
+
+			return enrolledActivities;
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		return null;
+	}
+
 	public Activity insertActivityIntoDB(Activity ac) {
 
 		String sql = "INSERT INTO activity(name, latitude, longitude, avb_places, id_cat, id_subcat, address, date, time) " +

@@ -53,7 +53,7 @@ public class Activity {
 		this.time = time;
 	}
 
-	public String toString(){
-		return name + " " + latitude + " " + longitude;
+	public String toString() {
+		return name + " " + latitude + " " + longitude + " " + avbPlaces + " " + idCat + " " + idSubcat + " " + address + " " + date + " " + time;
 	}
 }

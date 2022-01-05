@@ -32,9 +32,15 @@ public class ActivityController {
 		return activityService.getAllActivities();
 	}
 
-	@GetMapping("/getDefaultActivities/{latitude}/{longitude}/{distance}")
-	public String getDefaultActivitiesForClient(@PathVariable double latitude, @PathVariable double longitude, @PathVariable int distance) {
-		return activityService.getDefaultActivitiesForClient(latitude, longitude, distance);
+	@GetMapping("/getDistanceActivities/{latitude}/{longitude}/{distance}")
+	public String getDistanceActivitiesForClient(@PathVariable double latitude, @PathVariable double longitude, @PathVariable int distance) {
+		return activityService.getDistanceActivitiesForClient(latitude, longitude, distance);
+	}
+
+	@GetMapping("/getDefaultActivitiesForUser/{username}")
+	public String getDefaultActivitiesForUser(@PathVariable String username) {
+		LOGGER.info("activity/getDefaultActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
+		return activityService.getDefaultActivitiesForUser(username);
 	}
 
 	@GetMapping("/userEnrolled/{activityId}")
