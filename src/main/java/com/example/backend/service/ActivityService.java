@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -130,31 +131,18 @@ public class ActivityService {
 		User user = userRepository.getUserByUsername(username);
 		int userId = user.getId();
 
-		LOGGER.info("User retrieved from DB: [" + user.getFullName() + "]");
+		LOGGER.info("User retrieved from DB: [" + user.getFull_name() + "]");
 
-		Set<Activity> activities = activityRepository.getAllActivities();
-		LOGGER.info("All activities");
-
-		activities.forEach(activity -> {
-			LOGGER.info(activity.toString());
-		});
 		Set<Activity> enrolledActivities = activityRepository.getEnrolledActivitiesForUser(userId);
 		LOGGER.info("Enrolled activities");
 
+		JsonArray activityList = new JsonArray();
 		enrolledActivities.forEach(activity -> {
-			LOGGER.info(activity.toString());
+			addToJSONArray(activityList, activity);
 		});
 
-		JsonArray activityList = new JsonArray();
-
-		activities.forEach(activity -> enrolledActivities.forEach(enrolledActivity -> {
-			if (enrolledActivity.getName().equals(activity.getName())) {
-				LOGGER.info("Activity set contains: [" + activity + "]");
-			} else {
-				addToJSONArray(activityList, activity);
-			}
-		}));
 		return FileService.objectToJson(activityList);
+
 	}
 
 	private void addToJSONArray(JsonArray activityList, Activity activity) {

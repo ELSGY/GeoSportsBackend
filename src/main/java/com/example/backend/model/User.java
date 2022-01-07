@@ -10,7 +10,7 @@ public class User {
 	private int id;
 	@Getter
 	@Setter
-	private String fullName;
+	private String full_name;
 	@Getter
 	@Setter
 	private String username;
@@ -19,20 +19,24 @@ public class User {
 	private String email;
 	@Getter
 	@Setter
-	private byte[] photo;
+	private String password;
 	@Getter
 	@Setter
-	private boolean isAdmin;
+	private String photo;
+	@Getter
+	@Setter
+	private String isAdmin;
 
 	public User() {
 
 	}
 
-	public User(int id, String fullName, String username, String email, byte[] photo, boolean isAdmin) {
+	public User(int id, String full_name, String username, String email, String password, String photo, String isAdmin) {
 		this.id = id;
-		this.fullName = fullName;
+		this.full_name = full_name;
 		this.username = username;
 		this.email = email;
+		this.password = password;
 		this.photo = photo;
 		this.isAdmin = isAdmin;
 	}

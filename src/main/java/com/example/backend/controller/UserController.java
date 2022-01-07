@@ -1,10 +1,13 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +33,10 @@ public class UserController {
 		return userService.getUserById(id);
 	}
 
-//	@GetMapping("/getUserByName/{name}")
-//	public String getUserByName(@PathVariable String name) {
-//		return userService.getUserByName(name);
-//	}
+	@PostMapping("/insertUser")
+	public String insertUser(@RequestBody User user) {
+		return userService.insertUser(user);
+	}
 
 	@GetMapping("/getUserByPVKey/{pvKey}")
 	public String getUserByPVKey(@PathVariable String pvKey) {

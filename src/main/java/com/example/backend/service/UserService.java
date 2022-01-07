@@ -27,7 +27,7 @@ public class UserService {
 
 	private void createJSONUser(User user, JsonObject userJSON) {
 		userJSON.addProperty("id", user.getId());
-		userJSON.addProperty("fullName", user.getFullName());
+		userJSON.addProperty("full_name", user.getFull_name());
 		userJSON.addProperty("username", user.getUsername());
 		userJSON.addProperty("email", user.getEmail());
 	}
@@ -61,10 +61,14 @@ public class UserService {
 
 		User user = userRepository.getUserByPVKey(pvKey);
 
-		JsonObject userJSON = new JsonObject();
-		createJSONUser(user, userJSON);
+		if (user == null) {
+			return "Cannot retrieve user from DB";
+		} else {
+			JsonObject userJSON = new JsonObject();
+			createJSONUser(user, userJSON);
 
-		return FileService.objectToJson(userJSON);
+			return FileService.objectToJson(userJSON);
+		}
 	}
 
 	public String getUserByUsername(String name) {
@@ -86,5 +90,11 @@ public class UserService {
 
 		return String.format("GST%d%d%d%d%d", day, month, year, userID, activityID);
 
+	}
+
+	public String insertUser(User user) {
+
+		userRepository.insertUser(user);
+		return "User: [" + user.getFull_name() + "] with username: [" + user.getUsername() + "] inserted into DB!";
 	}
 }

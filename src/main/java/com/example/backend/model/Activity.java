@@ -3,6 +3,8 @@ package com.example.backend.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 public class Activity {
 
 	@Getter
@@ -55,5 +57,20 @@ public class Activity {
 
 	public String toString() {
 		return name + " " + latitude + " " + longitude + " " + avbPlaces + " " + idCat + " " + idSubcat + " " + address + " " + date + " " + time;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Activity activity = (Activity) o;
+		return getId() == activity.getId() && Double.compare(activity.getLatitude(), getLatitude()) == 0 && Double.compare(activity.getLongitude(), getLongitude()) == 0 && getAvbPlaces() == activity.getAvbPlaces() && getIdCat() == activity.getIdCat() && getIdSubcat() == activity.getIdSubcat() && getName().equals(activity.getName()) && getAddress().equals(activity.getAddress()) && getDate().equals(activity.getDate()) && getTime().equals(activity.getTime());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getName(), getLatitude(), getLongitude(), getAvbPlaces(), getIdCat(), getIdSubcat(), getAddress(), getDate(), getTime());
 	}
 }

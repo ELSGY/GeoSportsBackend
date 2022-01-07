@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -120,14 +121,30 @@ public class UserRepository {
 												 " WHERE u.id = at.user_id AND \n" +
 												 "       at.pv_key = " + "\"" + pvKey + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
 
-			LOGGER.info("Successfully retrieved user from DB");
+			if (user.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			} else {
+				LOGGER.info("Successfully retrieved user from DB");
 
-			return user.get(0);
+				return user.get(0);
+			}
+
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
+	}
+
+	public void insertUser(User user) {
+		String sql = "INSERT INTO users(full_name, username, email, password, photo, isAdmin) " +
+					 "VALUES(:full_name, :username, :email, :password, :photo, :isAdmin);";
+		try {
+			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(user));
+
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
 	}
 
 }
