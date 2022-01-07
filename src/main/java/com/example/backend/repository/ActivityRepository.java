@@ -67,10 +67,12 @@ public class ActivityRepository {
 
 		try {
 			Set<Activity> enrolledActivities = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
-																				"  FROM activity a,\n" +
-																				"       activityTickets at\n" +
-																				" WHERE a.id = at.activity_id AND \n" +
-																				"       at.user_id = " + userID + ";\n", BeanPropertyRowMapper.newInstance(Activity.class)));
+																				"  FROM activity a\n" +
+																				" WHERE a.id NOT IN (\n" +
+																				"           SELECT at.activity_id\n" +
+																				"             FROM activityTickets at\n" +
+																				"            WHERE at.user_id = " + userID + "\n" +
+																				"       );\n", BeanPropertyRowMapper.newInstance(Activity.class)));
 
 			LOGGER.info("Successfully retrieved " + enrolledActivities.size() + " enrolled activities for user from DB");
 
