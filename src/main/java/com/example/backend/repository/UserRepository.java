@@ -36,14 +36,16 @@ public class UserRepository {
 																   "       email,\n" +
 																   "       photo\n" +
 																   "  FROM users;", BeanPropertyRowMapper.newInstance(User.class)));
-
+			if (usersList.isEmpty()) {
+				LOGGER.info("Cannot retrieve users from DB");
+				return null;
+			}
 			LOGGER.info("Successfully retrieved " + usersList.size() + " users from DB");
 
 			return usersList;
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
 	}
 
@@ -57,34 +59,34 @@ public class UserRepository {
 												 "       photo\n" +
 												 "  FROM users\n" +
 												 " WHERE id = " + id + ";\n", BeanPropertyRowMapper.newInstance(User.class));
-
+			if (user.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			}
 			LOGGER.info("Successfully retrieved user from DB");
 
 			return user.get(0);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
 	}
 
 	public User getUserByUsername(String username) {
 
 		try {
-			List<User> user = jdbcTemplate.query("SELECT id,\n" +
-												 "       full_name,\n" +
-												 "       username,\n" +
-												 "       email,\n" +
-												 "       photo\n" +
+			List<User> user = jdbcTemplate.query("SELECT *\n" +
 												 "  FROM users\n" +
 												 " WHERE username = " + "\"" + username + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
-
+			if (user.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			}
 			LOGGER.info("Successfully retrieved user from DB");
 			return user.get(0);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
 	}
 
@@ -98,13 +100,15 @@ public class UserRepository {
 												 "       photo\n" +
 												 "  FROM users\n" +
 												 " WHERE username = " + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
-
+			if (user.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			}
 			LOGGER.info("Successfully retrieved user from DB");
 
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
 	}
 
@@ -146,5 +150,4 @@ public class UserRepository {
 			LOGGER.info(String.valueOf(e));
 		}
 	}
-
 }

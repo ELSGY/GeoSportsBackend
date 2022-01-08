@@ -7,10 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
+
+	private static final Logger LOGGER = Logger.getLogger(CategoriesController.class.getName());
 
 	private final CategoriesService categoriesService;
 
@@ -20,7 +24,8 @@ public class CategoriesController {
 	}
 
 	@GetMapping("/categoriesMap")
-	public String getCategoriesMap(){
+	public String getCategoriesMap() {
+		LOGGER.info("categories/categoriesMap endpoint was called");
 		return categoriesService.getCategoriesMap();
 	}
 }

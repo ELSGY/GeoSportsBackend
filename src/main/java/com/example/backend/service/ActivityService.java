@@ -39,6 +39,9 @@ public class ActivityService {
 
 		// get activities from db
 		Set<Activity> activitySet = activityRepository.getAllActivities();
+		if (activitySet.isEmpty()) {
+			return "Could not get activities from DB";
+		}
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,6 +77,9 @@ public class ActivityService {
 	public String getActivityByName(String name) {
 
 		Activity activity = activityRepository.getActivityByName(name);
+		if (activity == null) {
+			return "Could not get activity from DB";
+		}
 
 		JsonObject activityJSON = getActivityJSON(activity);
 
@@ -114,6 +120,9 @@ public class ActivityService {
 	public String getDistanceActivitiesForClient(double lat, double lng, int distance) {
 
 		Set<Activity> activities = activityRepository.getAllActivities();
+		if (activities.isEmpty()) {
+			return "Could not get activities from DB";
+		}
 
 		JsonArray activityList = new JsonArray();
 
@@ -129,11 +138,17 @@ public class ActivityService {
 	public String getDefaultActivitiesForUser(String username) {
 
 		User user = userRepository.getUserByUsername(username);
+		if (user == null) {
+			return "Could not get user from DB";
+		}
 		int userId = user.getId();
 
 		LOGGER.info("User retrieved from DB: [" + user.getFull_name() + "]");
 
 		Set<Activity> enrolledActivities = activityRepository.getEnrolledActivitiesForUser(userId);
+		if (enrolledActivities.isEmpty()) {
+			return "Could not get enrolled activities from DB";
+		}
 		LOGGER.info("Enrolled activities");
 
 		JsonArray activityList = new JsonArray();

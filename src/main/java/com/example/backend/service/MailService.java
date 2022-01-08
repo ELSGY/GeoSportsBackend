@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.User;
 import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
 import com.google.zxing.WriterException;
@@ -48,7 +49,7 @@ public class MailService {
 					   "\n" +
 					   "We would like to confirm that your account was created successfully. To access our page click the link below:\n" +
 					   "\n" +
-					   "http://localhost:3000/home\n" +
+					   "http://localhost:3000/login\n" +
 					   "\n" +
 					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
 					   "\n" +
@@ -57,13 +58,19 @@ public class MailService {
 
 	}
 
-	public void sendMessageWithAttachment(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
+	public String sendMessageWithAttachment(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
 
 		// get user id by name and activity id by name
-		System.out.println(userName);
-		int userID = userRepository.getUserByUsername(userName).getId();
-		System.out.println("am trecut");
+		User user = userRepository.getUserByUsername(userName);
+		if (user == null) {
+			return "Could not get user from DB";
+		}
+		int userID = user.getId();
+
 		Activity activity = activityRepository.getActivityByName(activityName);
+		if (activity == null) {
+			return "Could not get activity from DB";
+		}
 		int activityID = activity.getId();
 		String activityTime = activity.getTime();
 		String activityDate = activity.getDate();
@@ -94,6 +101,6 @@ public class MailService {
 		helper.addAttachment(activityName + "_QRCode.png", file);
 
 		emailSender.send(message);
-
+		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 }

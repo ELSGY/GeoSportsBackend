@@ -29,7 +29,9 @@ public class UserService {
 		userJSON.addProperty("id", user.getId());
 		userJSON.addProperty("full_name", user.getFull_name());
 		userJSON.addProperty("username", user.getUsername());
-		userJSON.addProperty("email", user.getEmail());
+		userJSON.addProperty("password", user.getPassword());
+		userJSON.addProperty("photo", user.getPhoto());
+		userJSON.addProperty("isAdmin", user.getIsAdmin());
 	}
 
 	public String getAllUsers() {
@@ -71,9 +73,9 @@ public class UserService {
 		}
 	}
 
-	public String getUserByUsername(String name) {
+	public String getUserByUsername(String username) {
 
-		User user = userRepository.getUserByUsername(name);
+		User user = userRepository.getUserByUsername(username);
 
 		JsonObject userJSON = new JsonObject();
 		createJSONUser(user, userJSON);

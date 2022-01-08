@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+	private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
 
 	private final UserService userService;
 
@@ -25,21 +29,31 @@ public class UserController {
 
 	@GetMapping("/getAllUsers")
 	public String getAllUsers() {
+		LOGGER.info("user/getAllUsers endpoint was called");
 		return userService.getAllUsers();
+	}
+
+	@GetMapping("/getUserByUsername/{username}")
+	public String getUserByUsername(@PathVariable String username) {
+		LOGGER.info("user/getUserByUsername/{username} endpoint was called with parameters [" + username + "]");
+		return userService.getUserByUsername(username);
 	}
 
 	@GetMapping("/getUserById/{id}")
 	public String getUserById(@PathVariable int id) {
+		LOGGER.info("user/getUserById/{id} endpoint was called with parameters [" + id + "]");
 		return userService.getUserById(id);
 	}
 
 	@PostMapping("/insertUser")
 	public String insertUser(@RequestBody User user) {
+		LOGGER.info("user/insertUser endpoint was called");
 		return userService.insertUser(user);
 	}
 
 	@GetMapping("/getUserByPVKey/{pvKey}")
 	public String getUserByPVKey(@PathVariable String pvKey) {
+		LOGGER.info("user/getUserByPVKey/{pvKey} endpoint was called with parameters [" + pvKey + "]");
 		return userService.getUserByPVKey(pvKey);
 	}
 

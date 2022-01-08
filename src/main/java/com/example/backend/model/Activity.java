@@ -55,10 +55,6 @@ public class Activity {
 		this.time = time;
 	}
 
-	public String toString() {
-		return name + " " + latitude + " " + longitude + " " + avbPlaces + " " + idCat + " " + idSubcat + " " + address + " " + date + " " + time;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

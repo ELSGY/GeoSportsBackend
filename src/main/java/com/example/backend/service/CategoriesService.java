@@ -29,10 +29,16 @@ public class CategoriesService {
 
 		// get categories and sort them
 		Set<SportsCategories> sportsCategoriesSet = categoriesRepository.getSportsCategories();
+		if (sportsCategoriesSet.isEmpty()) {
+			return "Could not get categories from DB";
+		}
 		TreeSet<SportsCategories> sortedCategoriesTreeSet = new TreeSet<>(sportsCategoriesSet);
 
 		// get subcategories
 		Set<SportsSubCategories> sportsSubCategoriesSet = categoriesRepository.getSportsSubCategories();
+		if (sportsSubCategoriesSet.isEmpty()) {
+			return "Could not get subcategories from DB";
+		}
 
 		JsonArray categoriesMap = new JsonArray();
 
@@ -44,7 +50,7 @@ public class CategoriesService {
 
 			sportsSubCategoriesSet.forEach(subCat -> {
 
-//				LOGGER.info("" + subCat.getCat());
+				//				LOGGER.info("" + subCat.getCat());
 
 				if (subCat.getCat() == cat.getId()) {
 					subCategories.add(subCat.getSubcatName());

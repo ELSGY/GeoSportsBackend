@@ -32,15 +32,17 @@ public class ActivityRepository {
 			Set<Activity> activitySet = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
 																		 "  FROM activity;\n", BeanPropertyRowMapper.newInstance(Activity.class)));
 
+			if (activitySet.isEmpty()) {
+				return null;
+			}
+
 			LOGGER.info("Successfully retrieved " + activitySet.size() + " activities from DB");
 
 			return activitySet;
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
-
 	}
 
 	public Activity getActivityByName(String name) {
@@ -49,6 +51,9 @@ public class ActivityRepository {
 			List<Activity> activity = jdbcTemplate.query("SELECT *\n" +
 														 "  FROM activity\n" +
 														 " WHERE name =" + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(Activity.class));
+			if (activity.isEmpty()) {
+				return null;
+			}
 
 			LOGGER.info("Successfully retrieved user from DB");
 
@@ -56,14 +61,12 @@ public class ActivityRepository {
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
-
 		return null;
 	}
 
 	public Set<Activity> getEnrolledActivitiesForUser(int userID) {
 
 		LOGGER.info("Getting activities from user with ID: [" + userID + "]");
-
 
 		try {
 			Set<Activity> enrolledActivities = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
@@ -122,5 +125,4 @@ public class ActivityRepository {
 			LOGGER.info(String.valueOf(e));
 		}
 	}
-
 }
