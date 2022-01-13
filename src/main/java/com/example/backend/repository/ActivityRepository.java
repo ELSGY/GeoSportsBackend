@@ -55,7 +55,7 @@ public class ActivityRepository {
 				return null;
 			}
 
-			LOGGER.info("Successfully retrieved user from DB");
+			LOGGER.info("Successfully retrieved activity from DB");
 
 			return activity.get(0);
 		} catch (DataAccessException e) {
@@ -115,12 +115,39 @@ public class ActivityRepository {
 		}
 	}
 
-	public void updateActivityParticipants(int activityId) {
+	public void updateActivityParticipants(String activityName) {
+
+		int activityId = getActivityByName(activityName).getId();
+
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("id", activityId);
 		String sql = "UPDATE activity\n" +
 					 "   SET avb_places = avb_places - 1\n" +
-					 " WHERE id='?';";
+					 " WHERE id = :id;";
 		try {
-			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(activityId));
+			jdbcTemplate.update(sql, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+	}
+
+	public void updateActivity(String name, String date, String time, int avbPlaces, int id) {
+		String sql = "UPDATE activity\n" +
+					 "   SET name = :name,\n" +
+					 "       date = :date,\n" +
+					 "       time = :time,\n" +
+					 "       avb_places = :avbPlaces\n" +
+					 " WHERE id = :id;\n";
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("name", name);
+		map.put("date", date);
+		map.put("time", time);
+		map.put("avbPlaces", avbPlaces);
+		map.put("id", id);
+
+		try {
+			jdbcTemplate.update(sql, map);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}

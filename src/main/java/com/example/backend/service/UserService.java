@@ -29,6 +29,7 @@ public class UserService {
 		userJSON.addProperty("id", user.getId());
 		userJSON.addProperty("full_name", user.getFull_name());
 		userJSON.addProperty("username", user.getUsername());
+		userJSON.addProperty("email", user.getEmail());
 		userJSON.addProperty("password", user.getPassword());
 		userJSON.addProperty("photo", user.getPhoto());
 		userJSON.addProperty("isAdmin", user.getIsAdmin());

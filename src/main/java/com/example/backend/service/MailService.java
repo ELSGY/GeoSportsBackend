@@ -49,7 +49,7 @@ public class MailService {
 					   "\n" +
 					   "We would like to confirm that your account was created successfully. To access our page click the link below:\n" +
 					   "\n" +
-					   "http://localhost:3000/login\n" +
+					   "http://localhost:3000/\n" +
 					   "\n" +
 					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
 					   "\n" +
@@ -74,6 +74,7 @@ public class MailService {
 		int activityID = activity.getId();
 		String activityTime = activity.getTime();
 		String activityDate = activity.getDate();
+		String activityAddress = activity.getAddress();
 
 		// create qr code
 		String code = qrCodeService.createQRCode(userName, userID, activityID);
@@ -91,6 +92,7 @@ public class MailService {
 		helper.setText("Hello " + userName + "," +
 					   "\n\nThis email has been sent to you because you are attending: " +
 					   "\n\nEvent: " + activityName +
+					   "\nAddress: " + activityAddress +
 					   "\nDate: " + activityDate +
 					   "\nTime: " + activityTime +
 					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +

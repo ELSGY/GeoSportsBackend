@@ -119,7 +119,7 @@ public class CategoriesRepository {
 		try {
 			List<SportsSubCategories> subcategory = jdbcTemplate.query("SELECT *\n" +
 																	   "  FROM activitySubCategories\n" +
-																	   "  where cat_name =" + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(SportsSubCategories.class));
+																	   "  where subcat_name =" + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(SportsSubCategories.class));
 			if (subcategory.isEmpty()) {
 				return null;
 			}

@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -62,7 +63,6 @@ public class ActivityService {
 
 			Date activityDate = null;
 			try {
-				LOGGER.info(activity.getDate());
 				activityDate = sdf.parse(activity.getDate());
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -135,7 +135,7 @@ public class ActivityService {
 		return FileService.objectToJson(activityList);
 	}
 
-	public String getDefaultActivitiesForUser(String username) {
+	public String getDefaultActivitiesForUser(String username, double latitude, double longitude) {
 
 		User user = userRepository.getUserByUsername(username);
 		if (user == null) {
@@ -153,7 +153,10 @@ public class ActivityService {
 
 		JsonArray activityList = new JsonArray();
 		enrolledActivities.forEach(activity -> {
-			addToJSONArray(activityList, activity);
+			LOGGER.info("Distanta fata de " + activity.getName() + ": " + getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude));
+			if (getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude) <= 100) {
+				addToJSONArray(activityList, activity);
+			}
 		});
 
 		return FileService.objectToJson(activityList);
@@ -166,11 +169,15 @@ public class ActivityService {
 		activityList.add(activityJSON);
 	}
 
-	public void updateActivityParticipants(int activityId) {
-		activityRepository.updateActivityParticipants(activityId);
+	public void updateActivityParticipants(String activityName) {
+		activityRepository.updateActivityParticipants(activityName);
 	}
 
 	public void insertActivityTicket(int userId, int activityId, String code) {
 		activityRepository.insertActivityTicket(userId, activityId, code);
+	}
+
+	public void updateActivity(String name, String date, String time, int avbPlaces, int id) {
+		activityRepository.updateActivity(name, date, time, avbPlaces, id);
 	}
 }

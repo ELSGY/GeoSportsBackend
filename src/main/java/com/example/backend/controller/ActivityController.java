@@ -38,21 +38,29 @@ public class ActivityController {
 		return activityService.getDistanceActivitiesForClient(latitude, longitude, distance);
 	}
 
-	@GetMapping("/getDefaultActivitiesForUser/{username}")
-	public String getDefaultActivitiesForUser(@PathVariable String username) {
+	@GetMapping("/getDefaultActivitiesForUser/{username}/{latitude}/{longitude}")
+	public String getDefaultActivitiesForUser(@PathVariable String username, @PathVariable String latitude, @PathVariable String longitude) {
 		LOGGER.info("activity/getDefaultActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
-		return activityService.getDefaultActivitiesForUser(username);
+		return activityService.getDefaultActivitiesForUser(username, Double.parseDouble(latitude), Double.parseDouble(longitude));
 	}
 
-	@GetMapping("/userEnrolled/{activityId}")
-	public void updateActivityParticipants(@PathVariable int activityId) {
-		LOGGER.info("activity/userEnrolled/{activityId} endpoint was called with parameter [" + activityId + "]");
-		activityService.updateActivityParticipants(activityId);
+	@GetMapping("/userEnrolled/{activityName}")
+	public String updateActivityParticipants(@PathVariable String activityName) {
+		LOGGER.info("activity/userEnrolled/{activityId} endpoint was called with parameter [" + activityName + "]");
+		activityService.updateActivityParticipants(activityName);
+		return "Available places for " + activityName + " were updated!";
 	}
 
 	@PostMapping("/insertActivity")
 	public Activity insertActivityIntoDB(@RequestBody Activity activity) {
 		LOGGER.info("activity/insertActivity endpoint was called with body");
 		return activityService.insertActivityIntoDB(activity);
+	}
+
+	@GetMapping("/updateActivity/{name}/{date}/{time}/{avbPlaces}/{id}")
+	public String updateActivity(@PathVariable String name, @PathVariable String date, @PathVariable String time, @PathVariable int avbPlaces, @PathVariable int id) {
+		LOGGER.info("activity/updateActivity/{name}/{time}/{date}/{avbPlaces}/{id} endpoint was called with body");
+		activityService.updateActivity(name, date, time, avbPlaces, id);
+		return "Activity: [" + name + "] was updated";
 	}
 }
