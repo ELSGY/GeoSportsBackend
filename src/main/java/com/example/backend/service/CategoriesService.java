@@ -40,31 +40,41 @@ public class CategoriesService {
 			return "Could not get subcategories from DB";
 		}
 
+		JsonArray categoriesMap = getJsonArray(sortedCategoriesTreeSet, sportsSubCategoriesSet);
+
+		return FileService.objectToJson(categoriesMap);
+	}
+
+	private JsonArray getJsonArray(TreeSet<SportsCategories> sortedCategoriesTreeSet, Set<SportsSubCategories> sportsSubCategoriesSet) {
 		JsonArray categoriesMap = new JsonArray();
 
 		// create categories map
 		sortedCategoriesTreeSet.forEach(cat -> {
 
-			JsonObject category = new JsonObject();
+			JsonObject categories = new JsonObject();
 			JsonArray subCategories = new JsonArray();
 
-			sportsSubCategoriesSet.forEach(subCat -> {
 
-				//				LOGGER.info("" + subCat.getCat());
+			sportsSubCategoriesSet.forEach(subCat -> {
+				JsonObject subCategory = new JsonObject();
 
 				if (subCat.getCat() == cat.getId()) {
-					subCategories.add(subCat.getSubcatName());
+					subCategory.addProperty("subCatId", subCat.getId());
+					subCategory.addProperty("subCatName", subCat.getSubcatName());
+					subCategories.add(subCategory);
 				}
 			});
+			JsonObject category = new JsonObject();
+			category.addProperty("catId", cat.getId());
+			category.addProperty("catName", cat.getCatName());
 
-			category.addProperty("category", cat.getCatName());
-			category.add("subcategories", subCategories);
+			categories.add("category", category);
+			categories.add("subcategories", subCategories);
 
-			categoriesMap.add(category);
+			categoriesMap.add(categories);
 
 		});
-
-		return FileService.objectToJson(categoriesMap);
+		return categoriesMap;
 	}
 
 	public String getCategoryById(int id) {

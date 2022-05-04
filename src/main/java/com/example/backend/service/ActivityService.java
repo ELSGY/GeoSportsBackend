@@ -98,6 +98,7 @@ public class ActivityService {
 		activityJSON.addProperty("address", activity.getAddress());
 		activityJSON.addProperty("date", activity.getDate());
 		activityJSON.addProperty("time", activity.getTime());
+		activityJSON.addProperty("photo", activity.getPhoto());
 		return activityJSON;
 	}
 
@@ -160,7 +161,6 @@ public class ActivityService {
 		});
 
 		return FileService.objectToJson(activityList);
-
 	}
 
 	private void addToJSONArray(JsonArray activityList, Activity activity) {

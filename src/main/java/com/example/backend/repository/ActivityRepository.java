@@ -89,8 +89,8 @@ public class ActivityRepository {
 
 	public Activity insertActivityIntoDB(Activity ac) {
 
-		String sql = "INSERT INTO activity(name, latitude, longitude, avb_places, id_cat, id_subcat, address, date, time) " +
-					 "VALUES(:name, :latitude, :longitude, :avbPlaces, :idCat, :idSubcat, :address, :date, :time);";
+		String sql = "INSERT INTO activity(name, latitude, longitude, avb_places, id_cat, id_subcat, address, date, time, photo) " +
+					 "VALUES(:name, :latitude, :longitude, :avbPlaces, :idCat, :idSubcat, :address, :date, :time, :photo);";
 		try {
 			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(ac));
 			return ac;
