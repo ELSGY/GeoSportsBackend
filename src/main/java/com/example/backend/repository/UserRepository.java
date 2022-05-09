@@ -30,11 +30,9 @@ public class UserRepository {
 	public Set<User> getUsers() {
 
 		try {
-			Set<User> usersList = new HashSet<>(jdbcTemplate.query("SELECT id,\n" +
-																   "       full_name,\n" +
+			Set<User> usersList = new HashSet<>(jdbcTemplate.query("SELECT id," +
 																   "       username,\n" +
-																   "       email,\n" +
-																   "       photo\n" +
+																   "       email\n" +
 																   "  FROM users;", BeanPropertyRowMapper.newInstance(User.class)));
 			if (usersList.isEmpty()) {
 				LOGGER.info("Cannot retrieve users from DB");
@@ -83,6 +81,24 @@ public class UserRepository {
 				return null;
 			}
 			LOGGER.info("Successfully retrieved user from DB");
+			return user.get(0);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return null;
+	}
+
+	public User getUserByEmail(String email) {
+
+		try {
+			List<User> user = jdbcTemplate.query("SELECT *\n" +
+												 "  FROM users\n" +
+												 " WHERE email = " + "\"" + email + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
+			if (user.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			}
+			LOGGER.info("Successfully retrieved user bt email from DB");
 			return user.get(0);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));

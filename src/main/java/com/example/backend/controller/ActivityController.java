@@ -51,6 +51,12 @@ public class ActivityController {
 		return "Available places for " + activityName + " were updated!";
 	}
 
+	@GetMapping("/getActivityByName/{activityName}")
+	public String getActivityByName(@PathVariable String activityName) {
+		LOGGER.info("getActivityByName/{activityName} endpoint was called with parameter [" + activityName + "]");
+		return activityService.getActivityByName(activityName);
+	}
+
 	@PostMapping("/insertActivity")
 	public Activity insertActivityIntoDB(@RequestBody Activity activity) {
 		LOGGER.info("activity/insertActivity endpoint was called with body");

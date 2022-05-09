@@ -39,6 +39,12 @@ public class UserController {
 		return userService.getUserByUsername(username);
 	}
 
+	@GetMapping("/getUserByEmail/{email}")
+	public String getUserByEmail(@PathVariable String email) {
+		LOGGER.info("user/getUserByEmail/{email} endpoint was called with parameters [" + email + "]");
+		return userService.getUserByEmail(email);
+	}
+
 	@GetMapping("/getUserById/{id}")
 	public String getUserById(@PathVariable int id) {
 		LOGGER.info("user/getUserById/{id} endpoint was called with parameters [" + id + "]");

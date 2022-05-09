@@ -10,7 +10,9 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.support.JspAwareRequestContext;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.text.SimpleDateFormat;
@@ -152,11 +154,25 @@ public class ActivityService {
 		}
 		LOGGER.info("Enrolled activities");
 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date(System.currentTimeMillis());
+		String today = formatter.format(date);
+
 		JsonArray activityList = new JsonArray();
+		//		enrolledActivities.forEach(activity -> {
+		//			LOGGER.info("Distanta fata de " + activity.getName() + ": " + getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude));
+		//			if (getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude) <= 100) {
+		//				addToJSONArray(activityList, activity);
+		//			}
+		//		});
+//
 		enrolledActivities.forEach(activity -> {
-			LOGGER.info("Distanta fata de " + activity.getName() + ": " + getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude));
-			if (getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude) <= 100) {
-				addToJSONArray(activityList, activity);
+			try {
+				if (formatter.parse(today).before(formatter.parse(activity.getDate()))) {
+					addToJSONArray(activityList, activity);
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
 		});
 

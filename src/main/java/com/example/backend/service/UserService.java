@@ -69,7 +69,6 @@ public class UserService {
 		} else {
 			JsonObject userJSON = new JsonObject();
 			createJSONUser(user, userJSON);
-
 			return FileService.objectToJson(userJSON);
 		}
 	}
@@ -81,6 +80,18 @@ public class UserService {
 		JsonObject userJSON = new JsonObject();
 		createJSONUser(user, userJSON);
 
+		return FileService.objectToJson(userJSON);
+	}
+
+	public String getUserByEmail(String email) {
+
+		User user = userRepository.getUserByEmail(email);
+		JsonObject userJSON = new JsonObject();
+		if (user != null) {
+			createJSONUser(user, userJSON);
+		} else {
+			userJSON.addProperty("email", "NULL");
+		}
 		return FileService.objectToJson(userJSON);
 	}
 
