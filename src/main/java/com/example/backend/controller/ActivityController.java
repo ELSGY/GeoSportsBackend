@@ -38,10 +38,16 @@ public class ActivityController {
 		return activityService.getDistanceActivitiesForClient(latitude, longitude, distance);
 	}
 
-	@GetMapping("/getDefaultActivitiesForUser/{username}/{latitude}/{longitude}")
-	public String getDefaultActivitiesForUser(@PathVariable String username, @PathVariable String latitude, @PathVariable String longitude) {
-		LOGGER.info("activity/getDefaultActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
-		return activityService.getDefaultActivitiesForUser(username, Double.parseDouble(latitude), Double.parseDouble(longitude));
+	@GetMapping("/getUnenrolledActivitiesForUser/{username}")
+	public String getUnenrolledActivitiesForUser(@PathVariable String username) {
+		LOGGER.info("activity/getUnenrolledActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
+		return activityService.getUnenrolledActivitiesForUser(username);
+	}
+
+	@GetMapping("/getEnrolledActivitiesForUser/{username}")
+	public String getEnrolledActivitiesForUser(@PathVariable String username) {
+		LOGGER.info("activity/getUnenrolledActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
+		return activityService.getEnrolledActivitiesForUser(username);
 	}
 
 	@GetMapping("/userEnrolled/{activityName}")
@@ -55,6 +61,12 @@ public class ActivityController {
 	public String getActivityByName(@PathVariable String activityName) {
 		LOGGER.info("getActivityByName/{activityName} endpoint was called with parameter [" + activityName + "]");
 		return activityService.getActivityByName(activityName);
+	}
+
+	@GetMapping("/getActivityByNameForUser/{activityName}/{username}")
+	public String getActivityByNameForUser(@PathVariable String activityName, @PathVariable String username) {
+		LOGGER.info("getActivityByNameForUser/{activityName}/{username} endpoint was called with parameters [" + activityName + "]");
+		return activityService.getActivityByNameForUser(activityName, username);
 	}
 
 	@PostMapping("/insertActivity")

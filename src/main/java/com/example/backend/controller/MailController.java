@@ -39,4 +39,9 @@ public class MailController {
 		return mailService.sendMessageWithAttachment(userMail, userName, activityName);
 	}
 
+	@GetMapping("/unsubscribe/{userMail}/{userName}/{activityName}")
+	public String sendUnsubscribeEventMail(@PathVariable String userMail, @PathVariable String userName, @PathVariable String activityName) throws MessagingException, IOException, WriterException {
+		LOGGER.info("mail/unsubscribe/{userMail}/{userName}/{activityName} endpoint was called with parameters [" + userMail + ", " + userName + ", " + activityName + "]");
+		return mailService.sendUnsubscribeEventMail(userMail, userName, activityName);
+	}
 }

@@ -106,28 +106,6 @@ public class UserRepository {
 		return null;
 	}
 
-	public User getUserByName(String name) {
-
-		try {
-			List<User> user = jdbcTemplate.query("SELECT id,\n" +
-												 "       full_name,\n" +
-												 "       username,\n" +
-												 "       email,\n" +
-												 "       photo\n" +
-												 "  FROM users\n" +
-												 " WHERE username = " + "\"" + name + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
-			if (user.isEmpty()) {
-				LOGGER.info("Cannot retrieve user from DB");
-				return null;
-			}
-			LOGGER.info("Successfully retrieved user from DB");
-
-		} catch (DataAccessException e) {
-			LOGGER.info(String.valueOf(e));
-		}
-		return null;
-	}
-
 	public User getUserByPVKey(String pvKey) {
 
 		try {

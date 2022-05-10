@@ -88,6 +88,22 @@ public class ActivityService {
 		return FileService.objectToJson(activityJSON);
 	}
 
+	public String getActivityByNameForUser(String name, String username) {
+
+		Activity activity = activityRepository.getActivityByName(name);
+		if (activity == null) {
+			return "Could not get activity from DB";
+		}
+
+		int userId = userRepository.getUserByUsername(username).getId();
+		int check = activityRepository.checkUserToActivity(userId, activity.getId());
+
+		JsonObject activityJSON = getActivityJSON(activity);
+		activityJSON.addProperty("enrolledCheck", check);
+
+		return FileService.objectToJson(activityJSON);
+	}
+
 	private JsonObject getActivityJSON(Activity activity) {
 		JsonObject activityJSON = new JsonObject();
 		activityJSON.addProperty("id", activity.getId());
@@ -130,7 +146,6 @@ public class ActivityService {
 		JsonArray activityList = new JsonArray();
 
 		activities.forEach(activity -> {
-
 			if (getDistanceBetweenTwoActivities(lat, lng, activity.getLatitude(), activity.getLongitude()) <= distance) {
 				addToJSONArray(activityList, activity);
 			}
@@ -138,7 +153,7 @@ public class ActivityService {
 		return FileService.objectToJson(activityList);
 	}
 
-	public String getDefaultActivitiesForUser(String username, double latitude, double longitude) {
+	public String getUnenrolledActivitiesForUser(String username) {
 
 		User user = userRepository.getUserByUsername(username);
 		if (user == null) {
@@ -148,25 +163,62 @@ public class ActivityService {
 
 		LOGGER.info("User retrieved from DB: [" + user.getFull_name() + "]");
 
-		Set<Activity> enrolledActivities = activityRepository.getEnrolledActivitiesForUser(userId);
-		if (enrolledActivities.isEmpty()) {
-			return "Could not get enrolled activities from DB";
+		Set<Activity> allActivities = activityRepository.getUnenrolledActivitiesForUser(userId);
+		if (allActivities.isEmpty()) {
+			return "Could not get activities from DB";
 		}
-		LOGGER.info("Enrolled activities");
+		LOGGER.info("All activities");
 
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date(System.currentTimeMillis());
-		String today = formatter.format(date);
 
-		JsonArray activityList = new JsonArray();
 		//		enrolledActivities.forEach(activity -> {
 		//			LOGGER.info("Distanta fata de " + activity.getName() + ": " + getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude));
 		//			if (getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude) <= 100) {
 		//				addToJSONArray(activityList, activity);
 		//			}
 		//		});
-//
-		enrolledActivities.forEach(activity -> {
+
+		JsonArray activityList = filterActiveEvents(allActivities);
+
+		return FileService.objectToJson(activityList);
+	}
+
+	public String getEnrolledActivitiesForUser(String username) {
+
+		User user = userRepository.getUserByUsername(username);
+		if (user == null) {
+			return "Could not get user from DB";
+		}
+		int userId = user.getId();
+
+		LOGGER.info("User retrieved from DB: [" + user.getFull_name() + "]");
+
+		Set<Activity> allActivities = activityRepository.getEnrolledActivitiesForUser(userId);
+		if (allActivities.isEmpty()) {
+			return "Could not get activities from DB";
+		}
+		LOGGER.info("All activities");
+
+
+		//		enrolledActivities.forEach(activity -> {
+		//			LOGGER.info("Distanta fata de " + activity.getName() + ": " + getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude));
+		//			if (getDistanceBetweenTwoActivities(activity.getLatitude(), activity.getLongitude(), latitude, longitude) <= 100) {
+		//				addToJSONArray(activityList, activity);
+		//			}
+		//		});
+
+		JsonArray activityList = filterActiveEvents(allActivities);
+
+		return FileService.objectToJson(activityList);
+	}
+
+	private JsonArray filterActiveEvents(Set<Activity> allActivities) {
+		// get just activities that are still active
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date(System.currentTimeMillis());
+		String today = formatter.format(date);
+
+		JsonArray activityList = new JsonArray();
+		allActivities.forEach(activity -> {
 			try {
 				if (formatter.parse(today).before(formatter.parse(activity.getDate()))) {
 					addToJSONArray(activityList, activity);
@@ -175,8 +227,7 @@ public class ActivityService {
 				e.printStackTrace();
 			}
 		});
-
-		return FileService.objectToJson(activityList);
+		return activityList;
 	}
 
 	private void addToJSONArray(JsonArray activityList, Activity activity) {
@@ -191,6 +242,10 @@ public class ActivityService {
 
 	public void insertActivityTicket(int userId, int activityId, String code) {
 		activityRepository.insertActivityTicket(userId, activityId, code);
+	}
+
+	public void deleteUserTicketForActivity(int userId, int activityId) {
+		activityRepository.deleteUserTicketForActivity(userId, activityId);
 	}
 
 	public void updateActivity(String name, String date, String time, int avbPlaces, int id) {

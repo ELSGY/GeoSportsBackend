@@ -1,6 +1,7 @@
 package com.example.backend.repository;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.ActivityTickets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +66,24 @@ public class ActivityRepository {
 		return null;
 	}
 
+	public int checkUserToActivity(int userId, int activityId) {
+		List<ActivityTickets> check = new ArrayList<>();
+		try {
+			check = jdbcTemplate.query("SELECT *\n" +
+									   "  FROM activityTickets\n" +
+									   " WHERE user_id =" + "\"" + userId + "\"" + " and activity_id=" + activityId + ";\n", BeanPropertyRowMapper.newInstance(ActivityTickets.class));
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		if (check.size() <= 0) {
+			LOGGER.info("User isn't enrolled to activity");
+			return 0;
+		} else {
+			LOGGER.info("User is enrolled to activity");
+			return 1;
+		}
+	}
+
 	public Set<Activity> getEnrolledActivitiesForUser(int userID) {
 
 		LOGGER.info("Getting activities from user with ID: [" + userID + "]");
@@ -71,7 +91,7 @@ public class ActivityRepository {
 		try {
 			Set<Activity> enrolledActivities = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
 																				"  FROM activity a\n" +
-																				" WHERE a.id NOT IN (\n" +
+																				" WHERE a.id IN (\n" +
 																				"           SELECT at.activity_id\n" +
 																				"             FROM activityTickets at\n" +
 																				"            WHERE at.user_id = " + userID + "\n" +
@@ -80,6 +100,29 @@ public class ActivityRepository {
 			LOGGER.info("Successfully retrieved " + enrolledActivities.size() + " enrolled activities for user from DB");
 
 			return enrolledActivities;
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		return null;
+	}
+
+	public Set<Activity> getUnenrolledActivitiesForUser(int userID) {
+
+		LOGGER.info("Getting activities for user with ID: [" + userID + "]");
+
+		try {
+			Set<Activity> unenrolledActivities = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
+																				  "  FROM activity a\n" +
+																				  " WHERE a.id NOT IN (\n" +
+																				  "           SELECT at.activity_id\n" +
+																				  "             FROM activityTickets at\n" +
+																				  "            WHERE at.user_id = " + userID + "\n" +
+																				  "       );\n", BeanPropertyRowMapper.newInstance(Activity.class)));
+
+			LOGGER.info("Successfully retrieved " + unenrolledActivities.size() + " enrolled activities for user from DB");
+
+			return unenrolledActivities;
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
@@ -108,6 +151,20 @@ public class ActivityRepository {
 		hashMap.put("code", code);
 
 		String sql = "INSERT INTO activityTickets(user_id, activity_id, pv_key) VALUES (:userId,:activityId,:code);";
+		try {
+			jdbcTemplate.update(sql, hashMap);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+	}
+
+	public void deleteUserTicketForActivity(int userId, int activityId) {
+
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("userId", userId);
+		hashMap.put("activityId", activityId);
+
+		String sql = "DELETE FROM activityTickets WHERE user_id = :userId and activity_id =  :activityId);";
 		try {
 			jdbcTemplate.update(sql, hashMap);
 		} catch (DataAccessException e) {

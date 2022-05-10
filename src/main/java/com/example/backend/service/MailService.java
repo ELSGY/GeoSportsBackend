@@ -102,7 +102,48 @@ public class MailService {
 		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + userName + ".png");
 		helper.addAttachment(activityName + "_QRCode.png", file);
 
+		activityService.updateActivityParticipants(activityName);
 		emailSender.send(message);
+		return "Activity ticket sent to " + userMail + "| User enrolled";
+	}
+
+
+	public String sendUnsubscribeEventMail(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
+
+		// get user id by name and activity id by name
+		User user = userRepository.getUserByUsername(userName);
+		if (user == null) {
+			return "Could not get user from DB";
+		}
+		int userID = user.getId();
+
+		Activity activity = activityRepository.getActivityByName(activityName);
+		if (activity == null) {
+			return "Could not get activity from DB";
+		}
+		int activityID = activity.getId();
+
+		// delete ticket into db
+		activityService.deleteUserTicketForActivity(userID, activityID);
+
+		//		MimeMessage message = emailSender.createMimeMessage();
+		//		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		//
+		//		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+		//		helper.setTo(userMail);
+		//		helper.setSubject("Welcome onboard! 😋");
+		//		helper.setText("Hello " + userName + ",\n" +
+		//					   "\n" +
+		//					   "Thank you for joining our team 🤩.\n" +
+		//					   "\n" +
+		//					   "We would like to confirm that your account was created successfully. To access our page click the link below:\n" +
+		//					   "\n" +
+		//					   "http://localhost:3000/\n" +
+		//					   "\n" +
+		//					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
+		//					   "\n" +
+		//					   "GeoSports Team 🏕");
+		//		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 }
