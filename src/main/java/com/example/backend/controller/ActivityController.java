@@ -53,7 +53,7 @@ public class ActivityController {
 	@GetMapping("/userEnrolled/{activityName}")
 	public String updateActivityParticipants(@PathVariable String activityName) {
 		LOGGER.info("activity/userEnrolled/{activityId} endpoint was called with parameter [" + activityName + "]");
-		activityService.updateActivityParticipants(activityName);
+		activityService.decreaseActivityParticipants(activityName);
 		return "Available places for " + activityName + " were updated!";
 	}
 

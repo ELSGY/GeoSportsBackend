@@ -164,22 +164,45 @@ public class ActivityRepository {
 		hashMap.put("userId", userId);
 		hashMap.put("activityId", activityId);
 
-		String sql = "DELETE FROM activityTickets WHERE user_id = :userId and activity_id =  :activityId);";
+		String sql = "DELETE FROM activityTickets WHERE user_id = :userId and activity_id =  :activityId;";
+
 		try {
-			jdbcTemplate.update(sql, hashMap);
+			int check = jdbcTemplate.update(sql, hashMap);
+			if (check == 1) {
+				LOGGER.info("Ticket deleted");
+			} else {
+				LOGGER.info("Couldn't delete ticket!");
+			}
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
 	}
 
-	public void updateActivityParticipants(String activityName) {
+	public void decreaseActivityParticipants(String activityName) {
+
+		int activityParticipants = getActivityByName(activityName).getAvbPlaces();
+		if (activityParticipants >= 1) {
+			int activityId = getActivityByName(activityName).getId();
+			HashMap<String, Integer> map = new HashMap<>();
+			map.put("id", activityId);
+			String sql = "UPDATE activity\n" +
+						 "   SET avb_places = avb_places - 1\n" +
+						 " WHERE id = :id;";
+			try {
+				jdbcTemplate.update(sql, map);
+			} catch (DataAccessException e) {
+				LOGGER.info(String.valueOf(e));
+			}
+		}
+	}
+
+	public void increaseActivityParticipants(String activityName) {
 
 		int activityId = getActivityByName(activityName).getId();
-
 		HashMap<String, Integer> map = new HashMap<>();
 		map.put("id", activityId);
 		String sql = "UPDATE activity\n" +
-					 "   SET avb_places = avb_places - 1\n" +
+					 "   SET avb_places = avb_places + 1\n" +
 					 " WHERE id = :id;";
 		try {
 			jdbcTemplate.update(sql, map);

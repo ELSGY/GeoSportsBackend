@@ -9,16 +9,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.support.JspAwareRequestContext;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -167,7 +163,7 @@ public class ActivityService {
 		if (allActivities.isEmpty()) {
 			return "Could not get activities from DB";
 		}
-		LOGGER.info("All activities");
+		LOGGER.info(".getUnenrolledActivitiesForUser");
 
 
 		//		enrolledActivities.forEach(activity -> {
@@ -196,7 +192,7 @@ public class ActivityService {
 		if (allActivities.isEmpty()) {
 			return "Could not get activities from DB";
 		}
-		LOGGER.info("All activities");
+		LOGGER.info(".getEnrolledActivitiesForUser");
 
 
 		//		enrolledActivities.forEach(activity -> {
@@ -236,8 +232,12 @@ public class ActivityService {
 		activityList.add(activityJSON);
 	}
 
-	public void updateActivityParticipants(String activityName) {
-		activityRepository.updateActivityParticipants(activityName);
+	public void decreaseActivityParticipants(String activityName) {
+		activityRepository.decreaseActivityParticipants(activityName);
+	}
+
+	public void increaseActivityParticipants(String activityName) {
+		activityRepository.increaseActivityParticipants(activityName);
 	}
 
 	public void insertActivityTicket(int userId, int activityId, String code) {

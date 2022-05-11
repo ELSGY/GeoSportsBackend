@@ -82,28 +82,28 @@ public class MailService {
 		// insert ticket into db
 		activityService.insertActivityTicket(userID, activityID, code);
 
-		MimeMessage message = emailSender.createMimeMessage();
+//		MimeMessage message = emailSender.createMimeMessage();
+//
+//		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+//
+//		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+//		helper.setTo(userMail);
+//		helper.setSubject("Here is your QRCode for your activity! 🎉");
+//		helper.setText("Hello " + userName + "," +
+//					   "\n\nThis email has been sent to you because you are attending: " +
+//					   "\n\nEvent: " + activityName +
+//					   "\nAddress: " + activityAddress +
+//					   "\nDate: " + activityDate +
+//					   "\nTime: " + activityTime +
+//					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
+//					   "\n\nDon't forget: don't show it to anyone 🤐" +
+//					   "\n\nGeoSports Team 🏕");
+//
+//		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + userName + ".png");
+//		helper.addAttachment(activityName + "_QRCode.png", file);
 
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
-		helper.setTo(userMail);
-		helper.setSubject("Here is your QRCode for your activity! 🎉");
-		helper.setText("Hello " + userName + "," +
-					   "\n\nThis email has been sent to you because you are attending: " +
-					   "\n\nEvent: " + activityName +
-					   "\nAddress: " + activityAddress +
-					   "\nDate: " + activityDate +
-					   "\nTime: " + activityTime +
-					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
-					   "\n\nDon't forget: don't show it to anyone 🤐" +
-					   "\n\nGeoSports Team 🏕");
-
-		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + userName + ".png");
-		helper.addAttachment(activityName + "_QRCode.png", file);
-
-		activityService.updateActivityParticipants(activityName);
-		emailSender.send(message);
+		activityService.decreaseActivityParticipants(activityName);
+		//		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 
@@ -123,9 +123,6 @@ public class MailService {
 		}
 		int activityID = activity.getId();
 
-		// delete ticket into db
-		activityService.deleteUserTicketForActivity(userID, activityID);
-
 		//		MimeMessage message = emailSender.createMimeMessage();
 		//		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 		//
@@ -143,7 +140,10 @@ public class MailService {
 		//					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
 		//					   "\n" +
 		//					   "GeoSports Team 🏕");
-		//		emailSender.send(message);
-		return "Activity ticket sent to " + userMail + "| User enrolled";
+
+		activityService.deleteUserTicketForActivity(userID, activityID);
+		activityService.increaseActivityParticipants(activityName);
+		//emailSender.send(message);
+		return "Activity ticket sent to " + userMail + "| User unenrolled from event";
 	}
 }
