@@ -1,10 +1,7 @@
 package com.example.backend.repository;
 
+import com.example.backend.model.Activity;
 import com.example.backend.model.User;
-
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -13,7 +10,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Repository
 public class UserRepository {
@@ -126,6 +125,30 @@ public class UserRepository {
 				LOGGER.info("Successfully retrieved user from DB");
 
 				return user.get(0);
+			}
+
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return null;
+	}
+
+	public Activity getActivityByPVKey(String pvKey) {
+
+		try {
+			List<Activity> activity = jdbcTemplate.query("SELECT a.name\n" +
+														 "  FROM activity a,\n" +
+														 "       activityTickets at\n" +
+														 " WHERE a.id = at.activity_id AND \n" +
+														 "       at.pv_key = " + "\"" + pvKey + "\"" + ";\n", BeanPropertyRowMapper.newInstance(Activity.class));
+
+			if (activity.isEmpty()) {
+				LOGGER.info("Cannot retrieve user from DB");
+				return null;
+			} else {
+				LOGGER.info("Successfully retrieved user from DB");
+
+				return activity.get(0);
 			}
 
 		} catch (DataAccessException e) {

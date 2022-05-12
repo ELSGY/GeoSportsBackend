@@ -1,9 +1,12 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Activity;
 import com.example.backend.model.User;
+import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.utils.FileService;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +14,18 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.google.gson.JsonObject;
-
 @Service
 public class UserService {
 
 	private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
 	private final UserRepository userRepository;
+	private final ActivityRepository activityRepository;
 
 	@Autowired
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, ActivityRepository activityRepository) {
 		this.userRepository = userRepository;
+		this.activityRepository = activityRepository;
 	}
 
 	private void createJSONUser(User user, JsonObject userJSON) {
@@ -63,12 +66,13 @@ public class UserService {
 	public String getUserByPVKey(String pvKey) {
 
 		User user = userRepository.getUserByPVKey(pvKey);
-
+		Activity activity = userRepository.getActivityByPVKey(pvKey);
 		if (user == null) {
 			return "Cannot retrieve user from DB";
 		} else {
 			JsonObject userJSON = new JsonObject();
 			createJSONUser(user, userJSON);
+			userJSON.addProperty("activityName", activity.getName());
 			return FileService.objectToJson(userJSON);
 		}
 	}
@@ -76,10 +80,12 @@ public class UserService {
 	public String getUserByUsername(String username) {
 
 		User user = userRepository.getUserByUsername(username);
-
 		JsonObject userJSON = new JsonObject();
-		createJSONUser(user, userJSON);
-
+		if (user != null) {
+			createJSONUser(user, userJSON);
+		} else {
+			userJSON.addProperty("username", "N");
+		}
 		return FileService.objectToJson(userJSON);
 	}
 
@@ -90,7 +96,7 @@ public class UserService {
 		if (user != null) {
 			createJSONUser(user, userJSON);
 		} else {
-			userJSON.addProperty("email", "NULL");
+			userJSON.addProperty("email", "N");
 		}
 		return FileService.objectToJson(userJSON);
 	}
