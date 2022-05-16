@@ -77,33 +77,37 @@ public class MailService {
 		String activityAddress = activity.getAddress();
 
 		// create qr code
-		String code = qrCodeService.createQRCode(userName, userID, activityID);
+		String code = qrCodeService.createQRCode(userName, userID, activityID, activityName);
+		// create event number
+		qrCodeService.drawPhoto(userName, activityName, userID);
 
 		// insert ticket into db
 		activityService.insertActivityTicket(userID, activityID, code);
 
-//		MimeMessage message = emailSender.createMimeMessage();
-//
-//		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//
-//		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
-//		helper.setTo(userMail);
-//		helper.setSubject("Here is your QRCode for your activity! 🎉");
-//		helper.setText("Hello " + userName + "," +
-//					   "\n\nThis email has been sent to you because you are attending: " +
-//					   "\n\nEvent: " + activityName +
-//					   "\nAddress: " + activityAddress +
-//					   "\nDate: " + activityDate +
-//					   "\nTime: " + activityTime +
-//					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
-//					   "\n\nDon't forget: don't show it to anyone 🤐" +
-//					   "\n\nGeoSports Team 🏕");
-//
-//		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + userName + ".png");
-//		helper.addAttachment(activityName + "_QRCode.png", file);
+		MimeMessage message = emailSender.createMimeMessage();
+
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+		helper.setTo(userMail);
+		helper.setSubject("Here is your QRCode for your activity! 🎉");
+		helper.setText("Hello " + userName + "," +
+					   "\n\nThis email has been sent to you because you are attending: " +
+					   "\n\nEvent: " + activityName +
+					   "\nAddress: " + activityAddress +
+					   "\nDate: " + activityDate +
+					   "\nTime: " + activityTime +
+					   "\n\nShow your QR Code to our team when you arrive there.See you soon!😋" +
+					   "\n\nDon't forget: don't show it to anyone 🤐" +
+					   "\n\nGeoSports Team 🏕");
+
+		FileSystemResource file = new FileSystemResource("src\\main\\resources\\qrcodes\\" + activityName + "_" + userName + ".png");
+		helper.addAttachment(activityName + "_QRCode.png", file);
+		FileSystemResource image = new FileSystemResource("src\\main\\resources\\layout\\" + activityName + "_" + userName + ".png");
+		helper.addAttachment("Your_number.png", image);
 
 		activityService.decreaseActivityParticipants(activityName);
-		//		emailSender.send(message);
+		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 
