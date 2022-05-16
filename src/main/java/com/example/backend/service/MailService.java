@@ -127,27 +127,24 @@ public class MailService {
 		}
 		int activityID = activity.getId();
 
-		//		MimeMessage message = emailSender.createMimeMessage();
-		//		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		//
-		//		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
-		//		helper.setTo(userMail);
-		//		helper.setSubject("Welcome onboard! 😋");
-		//		helper.setText("Hello " + userName + ",\n" +
-		//					   "\n" +
-		//					   "Thank you for joining our team 🤩.\n" +
-		//					   "\n" +
-		//					   "We would like to confirm that your account was created successfully. To access our page click the link below:\n" +
-		//					   "\n" +
-		//					   "http://localhost:3000/\n" +
-		//					   "\n" +
-		//					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
-		//					   "\n" +
-		//					   "GeoSports Team 🏕");
+		MimeMessage message = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+		helper.setTo(userMail);
+		helper.setSubject("We respect your decision! 😇");
+		helper.setText("Hello " + userName + ",\n" +
+					   "\n" +
+					   "Your ticket to \"" + activityName + "\" was deleted.\n" +
+					   "\n" +
+					   "Thank you for letting know us in time. 🤗\n" +
+					   "\n" +
+					   "\n" +
+					   "GeoSports Team 🏕");
 
 		activityService.deleteUserTicketForActivity(userID, activityID);
 		activityService.increaseActivityParticipants(activityName);
-		//emailSender.send(message);
+		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User unenrolled from event";
 	}
 }
