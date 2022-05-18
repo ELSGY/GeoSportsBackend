@@ -35,3 +35,4 @@ build/
 ### Date files ###
 application.properties
 qrcodes
+layout

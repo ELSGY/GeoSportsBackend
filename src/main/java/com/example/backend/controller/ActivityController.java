@@ -46,8 +46,20 @@ public class ActivityController {
 
 	@GetMapping("/getEnrolledActivitiesForUser/{username}")
 	public String getEnrolledActivitiesForUser(@PathVariable String username) {
-		LOGGER.info("activity/getUnenrolledActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
+		LOGGER.info("activity/getEnrolledActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
 		return activityService.getEnrolledActivitiesForUser(username);
+	}
+
+	@GetMapping("/getEnrolledPastActivitiesForUser/{username}")
+	public String getEnrolledPastActivitiesForUser(@PathVariable String username) {
+		LOGGER.info("activity/getEnrolledPastActivitiesForUser/{username} endpoint was called with parameter [" + username + "]");
+		return activityService.getEnrolledPastActivitiesForUser(username);
+	}
+
+	@GetMapping("/getTopActivities")
+	public String getTopActivities() {
+		LOGGER.info("activity/getTopActivities endpoint was called");
+		return activityService.getTopActivities();
 	}
 
 	@GetMapping("/userEnrolled/{activityName}")
@@ -80,5 +92,12 @@ public class ActivityController {
 		LOGGER.info("activity/updateActivity/{name}/{time}/{date}/{avbPlaces}/{id} endpoint was called with body");
 		activityService.updateActivity(name, date, time, avbPlaces, id);
 		return "Activity: [" + name + "] was updated";
+	}
+
+	@GetMapping("/updateActivityRating/{username}/{activityId}/{rating}")
+	public String updateActivityRating(@PathVariable String username, @PathVariable int activityId, @PathVariable int rating) {
+		LOGGER.info("activity/updateActivityRating endpoint was called with body");
+		activityService.updateActivityRating(username, activityId, rating);
+		return "Activity rating : [" + activityId + ", " + username + ", " + rating + "] was updated";
 	}
 }

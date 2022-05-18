@@ -1,6 +1,7 @@
 package com.example.backend.repository;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.ActivityRating;
 import com.example.backend.model.ActivityTickets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -128,6 +129,103 @@ public class ActivityRepository {
 		}
 
 		return null;
+	}
+
+	public boolean ratingGiven(ActivityRating ar) {
+
+		LOGGER.info("Getting activity rating for user with ID: [" + ar.getUserId() + "]");
+
+		try {
+			Set<ActivityRating> activityRatingSet = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
+																					 "  FROM activityRating\n" +
+																					 " WHERE activity_id = " + ar.getActivityId() + " AND \n" +
+																					 "       user_id =" + ar.getUserId() + ";", BeanPropertyRowMapper.newInstance(ActivityRating.class)));
+
+			LOGGER.info("Successfully retrieved existing " + activityRatingSet.size() + " rating for activity for user from DB");
+
+			if (activityRatingSet.size() > 0) {
+				return true;
+			}
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return false;
+	}
+
+	public int getActivityRatingForUser(int activityId, int userId) {
+
+		LOGGER.info("Getting activity rating for user with ID: [" + userId + "]");
+
+		try {
+			Set<ActivityRating> activityRatingSet = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
+																					 "  FROM activityRating\n" +
+																					 " WHERE activity_id = " + activityId + " AND \n" +
+																					 "       user_id =" + userId + ";", BeanPropertyRowMapper.newInstance(ActivityRating.class)));
+
+			LOGGER.info("Successfully retrieved existing " + activityRatingSet.size() + " rating for activity for user from DB");
+
+			if (activityRatingSet.size() > 0) {
+				return activityRatingSet.stream().findFirst().get().getRating();
+			}
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return 0;
+	}
+
+	public ActivityRating getActivityTopRating(int activityId) {
+
+		LOGGER.info("Getting activity rating with ID: [" + activityId + "]");
+
+		try {
+			Set<ActivityRating> activityRatingSet = new HashSet<>(jdbcTemplate.query("SELECT activity_id,\n" +
+																					 "       count(activity_id) user_id,\n" +
+																					 "       sum(rating) rating\n" +
+																					 "  FROM activityRating\n" +
+																					 " WHERE activity_id = " + activityId + "\n" +
+																					 " GROUP BY activity_id\n" +
+																					 " ORDER BY Rating DESC;\n", BeanPropertyRowMapper.newInstance(ActivityRating.class)));
+
+			LOGGER.info("Successfully retrieved existing " + activityRatingSet.size() + " rating for activity for user from DB");
+
+			if (activityRatingSet.size() > 0) {
+				return activityRatingSet.stream().findFirst().get();
+			}
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return null;
+	}
+
+	public void insertActivityRatingIntoDB(ActivityRating ar) {
+
+		String sql = "INSERT INTO activityRating(activity_id, user_id, rating) " +
+					 "VALUES(:activityId, :userId, :rating);";
+		try {
+			jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(ar));
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+	}
+
+	public void updateActivityRatingForUser(ActivityRating ar) {
+		String sql = "UPDATE activityRating\n" +
+					 "   SET activity_id = :activityId,\n" +
+					 "       user_id = :userId,\n" +
+					 "       rating = :rating\n" +
+					 " WHERE activity_id = :activityId AND \n" +
+					 "       user_id = :userId;";
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("activityId", ar.getActivityId());
+		map.put("userId", ar.getUserId());
+		map.put("rating", ar.getRating());
+
+		try {
+			jdbcTemplate.update(sql, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
 	}
 
 	public Activity insertActivityIntoDB(Activity ac) {

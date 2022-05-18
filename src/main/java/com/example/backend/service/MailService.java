@@ -54,7 +54,7 @@ public class MailService {
 					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
 					   "\n" +
 					   "GeoSports Team 🏕");
-		emailSender.send(message);
+//		emailSender.send(message);
 
 	}
 
@@ -107,7 +107,7 @@ public class MailService {
 		helper.addAttachment("Your_number.png", image);
 
 		activityService.decreaseActivityParticipants(activityName);
-		emailSender.send(message);
+//		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
 
@@ -144,7 +144,7 @@ public class MailService {
 
 		activityService.deleteUserTicketForActivity(userID, activityID);
 		activityService.increaseActivityParticipants(activityName);
-		emailSender.send(message);
+//		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User unenrolled from event";
 	}
 }

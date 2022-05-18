@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.ActivityRating;
 import com.example.backend.model.User;
 import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
@@ -11,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class ActivityService {
 
 		// get activities from db
 		Set<Activity> activitySet = activityRepository.getAllActivities();
-		if (activitySet.isEmpty()) {
+		if (activitySet == null) {
 			return "Could not get activities from DB";
 		}
 
@@ -66,7 +67,7 @@ public class ActivityService {
 				e.printStackTrace();
 			}
 			if (finalToday.before(activityDate))
-				addToJSONArray(activityList, activity);
+				addToJSONArray(activityList, activity, 0);
 		});
 
 		return FileService.objectToJson(activityList);
@@ -120,6 +121,15 @@ public class ActivityService {
 		return activityRepository.insertActivityIntoDB(activity);
 	}
 
+	public void updateActivityRating(String username, int activityId, int rating) {
+		ActivityRating ar = new ActivityRating(activityId, userRepository.getUserByUsername(username).getId(), rating);
+		if (activityRepository.ratingGiven(ar)) {
+			activityRepository.updateActivityRatingForUser(ar);
+		} else {
+			activityRepository.insertActivityRatingIntoDB(ar);
+		}
+	}
+
 	public double getDistanceBetweenTwoActivities(double lat1, double lon1, double lat2, double lon2) {
 		int R = 6371; // Radius of the earth in km
 		double dLat = Math.toRadians(lat2 - lat1);  // radians
@@ -143,7 +153,7 @@ public class ActivityService {
 
 		activities.forEach(activity -> {
 			if (getDistanceBetweenTwoActivities(lat, lng, activity.getLatitude(), activity.getLongitude()) <= distance) {
-				addToJSONArray(activityList, activity);
+				addToJSONArray(activityList, activity, 0);
 			}
 		});
 		return FileService.objectToJson(activityList);
@@ -207,6 +217,69 @@ public class ActivityService {
 		return FileService.objectToJson(activityList);
 	}
 
+	public String getEnrolledPastActivitiesForUser(String username) {
+
+		User user = userRepository.getUserByUsername(username);
+		if (user == null) {
+			return "Could not get user from DB";
+		}
+		int userId = user.getId();
+
+		LOGGER.info("User retrieved from DB: [" + user.getFull_name() + "]");
+
+		Set<Activity> allActivities = activityRepository.getEnrolledActivitiesForUser(userId);
+		if (allActivities.isEmpty()) {
+			return "Could not get activities from DB";
+		}
+		LOGGER.info(".getEnrolledPastActivitiesForUser");
+
+		JsonArray activityList = filterPastEvents(allActivities, userId);
+
+		return FileService.objectToJson(activityList);
+	}
+
+	public String getTopActivities() {
+		Set<Activity> allActivities = activityRepository.getAllActivities();
+		if (allActivities == null) {
+			return "Could not get activities from DB";
+		}
+		LOGGER.info(".getTopActivities");
+
+		JsonArray activityList = filterCurrentMonth(allActivities);
+
+		return FileService.objectToJson(activityList);
+	}
+
+	private JsonArray filterCurrentMonth(Set<Activity> allActivities) {
+		// get past activities in current month
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date(System.currentTimeMillis());
+		String today = formatter.format(date);
+
+		Date firstDayOfTheMonthDate = new Date(date.getYear(), date.getMonth(), 1);
+		String firstDayOfTheMonth = formatter.format(firstDayOfTheMonthDate);
+
+		JsonArray activityList = new JsonArray();
+		allActivities.forEach(activity -> {
+			try {
+				if ((formatter.parse(today).after(formatter.parse(activity.getDate()))) &&
+					(formatter.parse(activity.getDate()).after(formatter.parse(firstDayOfTheMonth)))) {
+					ActivityRating actRating = activityRepository.getActivityTopRating(activity.getId());
+					int rating;
+					if (actRating != null) {
+						rating = actRating.getRating() / actRating.getUserId();
+						addToJSONArray(activityList, activity, rating);
+					}
+					addToJSONArray(activityList, activity, 0);
+
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		});
+		return activityList;
+	}
+
 	private JsonArray filterActiveEvents(Set<Activity> allActivities) {
 		// get just activities that are still active
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -217,7 +290,7 @@ public class ActivityService {
 		allActivities.forEach(activity -> {
 			try {
 				if (formatter.parse(today).before(formatter.parse(activity.getDate()))) {
-					addToJSONArray(activityList, activity);
+					addToJSONArray(activityList, activity, 0);
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -226,9 +299,34 @@ public class ActivityService {
 		return activityList;
 	}
 
-	private void addToJSONArray(JsonArray activityList, Activity activity) {
-		JsonObject activityJSON = getActivityJSON(activity);
+	private JsonArray filterPastEvents(Set<Activity> allActivities, int userId) {
+		// get just activities that are still active
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date(System.currentTimeMillis());
+		String today = formatter.format(date);
 
+		JsonArray activityList = new JsonArray();
+		allActivities.forEach(activity -> {
+			try {
+				if (formatter.parse(today).after(formatter.parse(activity.getDate()))) {
+					ActivityRating ar = new ActivityRating(activity.getId(), userId, 0);
+					if (activityRepository.ratingGiven(ar)) {
+						int rating = activityRepository.getActivityRatingForUser(activity.getId(), userId);
+						addToJSONArray(activityList, activity, rating);
+					} else {
+						addToJSONArray(activityList, activity, 0);
+					}
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		});
+		return activityList;
+	}
+
+	private void addToJSONArray(JsonArray activityList, Activity activity, int rating) {
+		JsonObject activityJSON = getActivityJSON(activity);
+		activityJSON.addProperty("rating", rating);
 		activityList.add(activityJSON);
 	}
 
