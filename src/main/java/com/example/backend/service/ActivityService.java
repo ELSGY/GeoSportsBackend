@@ -351,7 +351,7 @@ public class ActivityService {
 		activityRepository.deleteUserTicketForActivity(userId, activityId);
 	}
 
-	public void updateActivity(String name, String date, String time, int avbPlaces, int id) {
-		activityRepository.updateActivity(name, date, time, avbPlaces, id);
+	public void updateActivity(String name, String address, String date, String time, int avbPlaces, int id, double lat, double lng) {
+		activityRepository.updateActivity(name, address, date, time, avbPlaces, id, lat, lng);
 	}
 }

@@ -87,10 +87,10 @@ public class ActivityController {
 		return activityService.insertActivityIntoDB(activity);
 	}
 
-	@GetMapping("/updateActivity/{name}/{date}/{time}/{avbPlaces}/{id}")
-	public String updateActivity(@PathVariable String name, @PathVariable String date, @PathVariable String time, @PathVariable int avbPlaces, @PathVariable int id) {
-		LOGGER.info("activity/updateActivity/{name}/{time}/{date}/{avbPlaces}/{id} endpoint was called with body");
-		activityService.updateActivity(name, date, time, avbPlaces, id);
+	@GetMapping("/updateActivity/{name}/{address}/{date}/{time}/{avbPlaces}/{id}/{lat}/{lng}")
+	public String updateActivity(@PathVariable String name, @PathVariable String address, @PathVariable String date, @PathVariable String time, @PathVariable int avbPlaces, @PathVariable int id, @PathVariable double lat, @PathVariable double lng) {
+		LOGGER.info("activity/updateActivity/{name}/{address}/{time}/{date}/{avbPlaces}/{id}/{lat}/{lng} endpoint was called with body");
+		activityService.updateActivity(name, address, date, time, avbPlaces, id, lat, lng);
 		return "Activity: [" + name + "] was updated";
 	}
 

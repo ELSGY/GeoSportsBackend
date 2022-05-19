@@ -342,18 +342,24 @@ public class ActivityRepository {
 		}
 	}
 
-	public void updateActivity(String name, String date, String time, int avbPlaces, int id) {
+	public void updateActivity(String name, String address, String date, String time, int avbPlaces, int id, double lat, double lng) {
 		String sql = "UPDATE activity\n" +
 					 "   SET name = :name,\n" +
 					 "       date = :date,\n" +
+					 "       address = :address,\n" +
 					 "       time = :time,\n" +
+					 "       latitude = :lat,\n" +
+					 "       longitude = :lng,\n" +
 					 "       avb_places = :avbPlaces\n" +
 					 " WHERE id = :id;\n";
 
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("name", name);
+		map.put("address", address);
 		map.put("date", date);
 		map.put("time", time);
+		map.put("lat", lat);
+		map.put("lng", lng);
 		map.put("avbPlaces", avbPlaces);
 		map.put("id", id);
 
