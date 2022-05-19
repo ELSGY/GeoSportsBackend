@@ -208,6 +208,39 @@ public class ActivityRepository {
 		}
 	}
 
+	public void deleteActivity(int activityId) {
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("id", activityId);
+
+		String sqlActivity = "DELETE FROM activity\n" +
+							 "      WHERE id = :id;\n";
+
+		try {
+			jdbcTemplate.update(sqlActivity, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		String sqlTickets = "DELETE FROM activityTickets\n" +
+							"      WHERE activity_id = :id;\n";
+
+		try {
+			jdbcTemplate.update(sqlTickets, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+
+		String sqlRating = "DELETE FROM activityRating\n" +
+						   "      WHERE activity_id = :id;\n";
+
+		try {
+			jdbcTemplate.update(sqlRating, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+	}
+
 	public void updateActivityRatingForUser(ActivityRating ar) {
 		String sql = "UPDATE activityRating\n" +
 					 "   SET activity_id = :activityId,\n" +

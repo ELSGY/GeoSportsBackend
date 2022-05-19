@@ -34,5 +34,5 @@ build/
 
 ### Date files ###
 application.properties
-qrcodes
-layout
+src/main/resources/qrcodes
+src/main/resources/layout

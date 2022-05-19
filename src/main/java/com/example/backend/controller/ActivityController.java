@@ -100,4 +100,11 @@ public class ActivityController {
 		activityService.updateActivityRating(username, activityId, rating);
 		return "Activity rating : [" + activityId + ", " + username + ", " + rating + "] was updated";
 	}
+
+	@GetMapping("/deleteActivity/{activityId}")
+	public String deleteActivity(@PathVariable int activityId) {
+		LOGGER.info("/deleteActivity/{activityId} endpoint was called with parameter [" + activityId + "]");
+		activityService.deleteActivity(activityId);
+		return "Activity rating : [" + activityId + "] was deleted";
+	}
 }
