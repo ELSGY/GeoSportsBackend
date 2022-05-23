@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Activity;
+import com.example.backend.model.ActivityTickets;
 import com.example.backend.model.User;
 import com.example.backend.repository.ActivityRepository;
 import com.example.backend.repository.UserRepository;
@@ -16,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Set;
 
 @Component
 public class MailService {
@@ -54,7 +56,7 @@ public class MailService {
 					   "If you experience any issues logging into your account, reach out to us at geosports.srl@gmail.com 📧.\n" +
 					   "\n" +
 					   "GeoSports Team 🏕");
-//		emailSender.send(message);
+		emailSender.send(message);
 
 	}
 
@@ -107,10 +109,9 @@ public class MailService {
 		helper.addAttachment("Your_number.png", image);
 
 		activityService.decreaseActivityParticipants(activityName);
-//		emailSender.send(message);
+		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User enrolled";
 	}
-
 
 	public String sendUnsubscribeEventMail(String userMail, String userName, String activityName) throws MessagingException, IOException, WriterException {
 
@@ -144,7 +145,102 @@ public class MailService {
 
 		activityService.deleteUserTicketForActivity(userID, activityID);
 		activityService.increaseActivityParticipants(activityName);
-//		emailSender.send(message);
+		emailSender.send(message);
 		return "Activity ticket sent to " + userMail + "| User unenrolled from event";
+	}
+
+	public void sendActivityDeletedMail(int activityId) {
+
+		Set<ActivityTickets> activityTickets = activityRepository.getUsersTicketByActivityId(activityId);
+		if (activityTickets != null) {
+
+			Activity activity = activityRepository.getActivityById(activityId);
+			if (activity == null) {
+				return;
+			}
+
+			String activityName = activity.getName();
+
+			MimeMessage message = emailSender.createMimeMessage();
+
+			activityTickets.forEach(activityTicket -> {
+				int userId = activityTicket.getUser_id();
+				// get user id by name and activity id by name
+				User user = userRepository.getUserById(userId);
+				String userName = user.getUsername();
+				String userMail = user.getEmail();
+
+				MimeMessageHelper helper;
+				try {
+					helper = new MimeMessageHelper(message, true);
+					helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+					helper.setTo(userMail);
+					helper.setSubject("Bad news today! 😥");
+					helper.setText("Hello " + userName + ",\n" +
+								   "\n" +
+								   "\"" + activityName + "\" got cancelled.\n" +
+								   "\n" +
+								   "We'll keep you in touch for further details. 🤗\n" +
+								   "\n" +
+								   "\n" +
+								   "GeoSports Team 🏕");
+
+					emailSender.send(message);
+				} catch (MessagingException | UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+
+			});
+
+			activityRepository.deleteActivity(activityId);
+		}
+	}
+
+	public void updateActivityMail(String name, String address, String date, String time, int avbPlaces, int id, double lat, double lng) {
+
+		Set<ActivityTickets> activityTickets = activityRepository.getUsersTicketByActivityId(id);
+		if (activityTickets != null) {
+
+			Activity activity = activityRepository.getActivityById(id);
+
+			String activityName = activity.getName();
+
+			MimeMessage message = emailSender.createMimeMessage();
+
+			activityTickets.forEach(activityTicket -> {
+				int userId = activityTicket.getUser_id();
+				// get user id by name and activity id by name
+				User user = userRepository.getUserById(userId);
+				String userName = user.getUsername();
+				String userMail = user.getEmail();
+
+				MimeMessageHelper helper;
+				try {
+					helper = new MimeMessageHelper(message, true);
+					helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));
+					helper.setTo(userMail);
+					helper.setSubject("There are some changes! 😥");
+					helper.setText("Hello " + userName + ",\n" +
+								   "\n" +
+								   "\"" + activityName + "\" got some updates:\n" +
+								   "\nEvent's name: " + name +
+								   "\nAddress: " + address +
+								   "\nDate: " + date +
+								   "\nTime: " + time +
+								   "\nTickets remaining: " + avbPlaces +
+								   "\n" +
+								   "We hope we didn't messed up your plans.See you there. 🤗\n" +
+								   "\n" +
+								   "\n" +
+								   "GeoSports Team 🏕");
+
+					emailSender.send(message);
+				} catch (MessagingException | UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+
+			});
+		}
+		activityRepository.updateActivity(name, address, date, time, avbPlaces, id, lat, lng);
 	}
 }

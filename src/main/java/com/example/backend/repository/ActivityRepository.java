@@ -67,6 +67,25 @@ public class ActivityRepository {
 		return null;
 	}
 
+	public Activity getActivityById(int activityId) {
+
+		try {
+			List<Activity> activity = jdbcTemplate.query("SELECT *\n" +
+														 "  FROM activity\n" +
+														 " WHERE id =" + "\"" + activityId + "\"" + ";\n", BeanPropertyRowMapper.newInstance(Activity.class));
+			if (activity.isEmpty()) {
+				return null;
+			}
+
+			LOGGER.info("Successfully retrieved activity from DB");
+
+			return activity.get(0);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return null;
+	}
+
 	public int checkUserToActivity(int userId, int activityId) {
 		List<ActivityTickets> check = new ArrayList<>();
 		try {
@@ -171,6 +190,27 @@ public class ActivityRepository {
 			LOGGER.info(String.valueOf(e));
 		}
 		return 0;
+	}
+
+	public Set<ActivityTickets> getUsersTicketByActivityId(int activityId) {
+
+		LOGGER.info("Getting user ids for activity with ID: [" + activityId + "]");
+
+		try {
+			Set<ActivityTickets> users = new HashSet<>(jdbcTemplate.query("SELECT *\n" +
+																		  "  FROM activityTickets\n" +
+																		  " WHERE activity_id = " + activityId + ";"
+					, BeanPropertyRowMapper.newInstance(ActivityTickets.class)));
+
+			LOGGER.info("Successfully retrieved " + users.size() + " user tickets from DB");
+
+			if (users.size() > 0) {
+				return users;
+			}
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
+		return null;
 	}
 
 	public ActivityRating getActivityTopRating(int activityId) {

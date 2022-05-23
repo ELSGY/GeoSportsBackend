@@ -130,11 +130,6 @@ public class ActivityService {
 		}
 	}
 
-	public void deleteActivity(int activityId) {
-		activityRepository.deleteActivity(activityId);
-		// TODO send mail
-	}
-
 	public double getDistanceBetweenTwoActivities(double lat1, double lon1, double lat2, double lon2) {
 		int R = 6371; // Radius of the earth in km
 		double dLat = Math.toRadians(lat2 - lat1);  // radians
@@ -351,7 +346,5 @@ public class ActivityService {
 		activityRepository.deleteUserTicketForActivity(userId, activityId);
 	}
 
-	public void updateActivity(String name, String address, String date, String time, int avbPlaces, int id, double lat, double lng) {
-		activityRepository.updateActivity(name, address, date, time, avbPlaces, id, lat, lng);
-	}
+
 }

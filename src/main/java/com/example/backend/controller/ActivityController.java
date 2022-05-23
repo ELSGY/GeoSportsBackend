@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Activity;
 import com.example.backend.service.ActivityService;
+import com.example.backend.service.MailService;
+import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 @CrossOrigin
@@ -20,10 +24,12 @@ public class ActivityController {
 
 	private static final Logger LOGGER = Logger.getLogger(ActivityController.class.getName());
 	private final ActivityService activityService;
+	private final MailService mailService;
 
 	@Autowired
-	public ActivityController(ActivityService activityService) {
+	public ActivityController(ActivityService activityService, MailService mailService) {
 		this.activityService = activityService;
+		this.mailService = mailService;
 	}
 
 	@GetMapping("/allActivities")
@@ -90,7 +96,7 @@ public class ActivityController {
 	@GetMapping("/updateActivity/{name}/{address}/{date}/{time}/{avbPlaces}/{id}/{lat}/{lng}")
 	public String updateActivity(@PathVariable String name, @PathVariable String address, @PathVariable String date, @PathVariable String time, @PathVariable int avbPlaces, @PathVariable int id, @PathVariable double lat, @PathVariable double lng) {
 		LOGGER.info("activity/updateActivity/{name}/{address}/{time}/{date}/{avbPlaces}/{id}/{lat}/{lng} endpoint was called with body");
-		activityService.updateActivity(name, address, date, time, avbPlaces, id, lat, lng);
+		mailService.updateActivityMail(name, address, date, time, avbPlaces, id, lat, lng);
 		return "Activity: [" + name + "] was updated";
 	}
 
@@ -102,9 +108,9 @@ public class ActivityController {
 	}
 
 	@GetMapping("/deleteActivity/{activityId}")
-	public String deleteActivity(@PathVariable int activityId) {
+	public String deleteActivity(@PathVariable int activityId) throws MessagingException, IOException, WriterException {
 		LOGGER.info("/deleteActivity/{activityId} endpoint was called with parameter [" + activityId + "]");
-		activityService.deleteActivity(activityId);
+		mailService.sendActivityDeletedMail(activityId);
 		return "Activity rating : [" + activityId + "] was deleted";
 	}
 }
