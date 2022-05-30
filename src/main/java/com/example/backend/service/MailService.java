@@ -191,9 +191,8 @@ public class MailService {
 				}
 
 			});
-
-			activityRepository.deleteActivity(activityId);
 		}
+		activityRepository.deleteActivity(activityId);
 	}
 
 	public void updateActivityMail(String name, String address, String date, String time, int avbPlaces, int id, double lat, double lng) {

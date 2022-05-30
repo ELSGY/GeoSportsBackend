@@ -256,7 +256,7 @@ public class ActivityService {
 		Date date = new Date(System.currentTimeMillis());
 		String today = formatter.format(date);
 
-		Date firstDayOfTheMonthDate = new Date(date.getYear(), date.getMonth(), 1);
+		Date firstDayOfTheMonthDate = new Date(date.getYear(), date.getMonth(), 0);
 		String firstDayOfTheMonth = formatter.format(firstDayOfTheMonthDate);
 
 		JsonArray activityList = new JsonArray();
