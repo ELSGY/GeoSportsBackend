@@ -92,4 +92,8 @@ public class CategoriesService {
 	public int getSubcategoryByName(String name) {
 		return categoriesRepository.getSubcategoryByName(name).getId();
 	}
+
+	public void addSubcategory(int categoryId, String subcategoryName) {
+		categoriesRepository.addSubcategory(categoryId, subcategoryName);
+	}
 }

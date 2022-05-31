@@ -2,13 +2,13 @@ package com.example.backend.repository;
 
 import com.example.backend.model.SportsCategories;
 import com.example.backend.model.SportsSubCategories;
-import com.example.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,5 +130,19 @@ public class CategoriesRepository {
 			LOGGER.info(String.valueOf(e));
 		}
 		return null;
+	}
+
+	public void addSubcategory(int cat, String subcat) {
+		String sql = "INSERT INTO activitySubCategories(subcat_name, cat) values (:subcat_name, :cat);";
+
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("subcat_name", subcat);
+		map.put("cat", cat);
+
+		try {
+			jdbcTemplate.update(sql, map);
+		} catch (DataAccessException e) {
+			LOGGER.info(String.valueOf(e));
+		}
 	}
 }
