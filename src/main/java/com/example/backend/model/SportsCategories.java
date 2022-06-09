@@ -1,27 +1,22 @@
 package com.example.backend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Comparator;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class SportsCategories implements Comparable<SportsCategories> {
 
-	@Getter
-	@Setter
 	private int id;
-	@Getter
-	@Setter
 	private String catName;
-
-	public SportsCategories() {
-
-	}
-
-	public SportsCategories(int id, String catName) {
-		this.id = id;
-		this.catName = catName;
-	}
 
 	@Override
 	public int compareTo(SportsCategories o) {

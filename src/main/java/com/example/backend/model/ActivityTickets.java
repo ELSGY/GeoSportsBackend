@@ -1,21 +1,20 @@
 package com.example.backend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class ActivityTickets {
 
-	@Getter
-	@Setter
 	private int id;
-	@Getter
-	@Setter
 	private int user_id;
-	@Getter
-	@Setter
 	private int activity_id;
-	@Getter
-	@Setter
 	private int pv_key;
-
 }
