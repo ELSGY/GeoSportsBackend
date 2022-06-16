@@ -9,6 +9,9 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,20 +74,36 @@ public class UserRepository {
 
 	public User getUserByUsername(String username) {
 
+		// start method
+		long startTime = System.nanoTime() / 1000000;
+
 		try {
 			List<User> user = jdbcTemplate.query("SELECT *\n" +
 												 "  FROM users\n" +
 												 " WHERE username = " + "\"" + username + "\"" + ";\n", BeanPropertyRowMapper.newInstance(User.class));
 			if (user.isEmpty()) {
 				LOGGER.info("Cannot retrieve user from DB");
+				getElapsedTime(startTime);
 				return null;
 			}
 			LOGGER.info("Successfully retrieved user from DB");
+			getElapsedTime(startTime);
 			return user.get(0);
 		} catch (DataAccessException e) {
 			LOGGER.info(String.valueOf(e));
 		}
+
+		getElapsedTime(startTime);
 		return null;
+	}
+
+	private void getElapsedTime(long startTime) {
+		// end method
+		long endTime = System.nanoTime() / 1000000;
+
+		// elapsed time
+		double diff = endTime - startTime;
+		LOGGER.info("Function getUserByUsername took: " + diff);
 	}
 
 	public User getUserByEmail(String email) {

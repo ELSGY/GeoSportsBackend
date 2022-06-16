@@ -270,8 +270,6 @@ public class ActivityService {
 						rating = actRating.getRating() / actRating.getUserId();
 						addToJSONArray(activityList, activity, rating);
 					}
-//					addToJSONArray(activityList, activity, 0);
-
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();

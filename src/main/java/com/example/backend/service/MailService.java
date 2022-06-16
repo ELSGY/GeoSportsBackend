@@ -11,6 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-@Component
+@Service
 public class MailService {
 
 	private final JavaMailSender emailSender;
@@ -87,7 +88,6 @@ public class MailService {
 		activityService.insertActivityTicket(userID, activityID, code);
 
 		MimeMessage message = emailSender.createMimeMessage();
-
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 		helper.setFrom(new InternetAddress("geosports.srl@gmail.com", "GeoSports Team"));

@@ -102,14 +102,12 @@ public class UserService {
 	}
 
 	public String generateEventCode(int userID, int activityID) {
-
 		LocalDate date = LocalDate.now();
 		int day = date.getDayOfMonth();
 		int month = date.getMonthValue();
 		int year = date.getYear();
 
 		return String.format("GST%d%d%d%d%d", day, month, year, userID, activityID);
-
 	}
 
 	public String insertUser(User user) {

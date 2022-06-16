@@ -8,6 +8,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@Component
+@Service
 public class QRCodeService {
 
 	private static final Logger LOGGER = Logger.getLogger(DataSourceConfig.class.getName());
@@ -63,7 +64,6 @@ public class QRCodeService {
 
 		drawName(image, g, eventName);
 		drawNumber(image, g, userId);
-
 		g.drawImage(outputImage, 690, 655, null);
 
 		g.dispose();
