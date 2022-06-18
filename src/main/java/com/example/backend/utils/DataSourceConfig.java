@@ -6,18 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
-import java.util.logging.Logger;
-
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 @Configuration
 @EnableTransactionManagement
@@ -57,7 +53,7 @@ public class DataSourceConfig {
 		mailSender.setPort(587);
 
 		mailSender.setUsername("geosports.srl@gmail.com");
-		mailSender.setPassword("Geosports2021");
+		mailSender.setPassword("sphobgxmctpwciuf");
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");
